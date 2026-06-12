@@ -14,6 +14,14 @@
                letter-spacing:.5px;margin:16px 0 8px}
 .sync-badge{background:#1565c0;color:white;border-radius:20px;padding:3px 12px;
             font-size:.78rem;font-weight:700}
+.tabs{display:flex;gap:0;border-bottom:2px solid #e5e5e5;margin-bottom:22px}
+.tab-btn{background:none;border:none;padding:10px 24px;font-size:.92rem;font-weight:700;
+         color:#888;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;
+         transition:color .15s}
+.tab-btn:hover{color:#1a6b3c}
+.tab-btn.active{color:#1a6b3c;border-bottom-color:#1a6b3c}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 </style>
 {% endblock %}
 
@@ -30,87 +38,108 @@
   <a href="{{ url_for('master_logout') }}" class="btn btn-gray btn-sm">Logout</a>
 </div>
 
-{% if upcoming %}
-<div class="card">
-  <div class="card-hd">⏳ Upcoming Matches ({{ upcoming|length }})</div>
-  <div class="card-body" style="padding:10px 18px">
-    {% set ns = namespace(current_date='') %}
-    {% for match in upcoming %}
-      {% set mdate = match.datetime[:10] %}
-      {% if mdate != ns.current_date %}
-        {% set ns.current_date = mdate %}
-        <div class="section-title">{{ fmt_dt(match.datetime).split(',')[0] }}</div>
-      {% endif %}
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('matches', this)">⚽ Matches</button>
+  <button class="tab-btn" onclick="switchTab('leagues', this)">🏟 Leagues ({{ leagues|length }})</button>
+</div>
+
+<!-- Matches tab -->
+<div id="tab-matches" class="tab-panel active">
+
+  {% if upcoming %}
+  <div class="card">
+    <div class="card-hd">⏳ Upcoming Matches ({{ upcoming|length }})</div>
+    <div class="card-body" style="padding:10px 18px">
+      {% set ns = namespace(current_date='') %}
+      {% for match in upcoming %}
+        {% set mdate = match.datetime[:10] %}
+        {% if mdate != ns.current_date %}
+          {% set ns.current_date = mdate %}
+          <div class="section-title">{{ fmt_dt(match.datetime).split(',')[0] }}</div>
+        {% endif %}
+        <div class="match-result-row">
+          <div class="mr-name">{{ match.name }}</div>
+          <div class="mr-time">{{ fmt_dt(match.datetime) }}</div>
+          <form method="post" action="{{ url_for('master_result') }}" class="mr-form">
+            <input type="hidden" name="match_id" value="{{ match.id }}">
+            <input type="text" name="actual" placeholder="2-1" title="Final score">
+            <button type="submit" class="btn btn-green btn-sm">Save &amp; Sync</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if completed %}
+  <div class="card">
+    <div class="card-hd">✅ Completed Matches ({{ completed|length }})</div>
+    <div class="card-body" style="padding:10px 18px">
+      {% for match in completed|reverse %}
       <div class="match-result-row">
         <div class="mr-name">{{ match.name }}</div>
         <div class="mr-time">{{ fmt_dt(match.datetime) }}</div>
+        <div class="mr-result">{{ match.result }}</div>
         <form method="post" action="{{ url_for('master_result') }}" class="mr-form">
           <input type="hidden" name="match_id" value="{{ match.id }}">
-          <input type="text" name="actual" placeholder="2-1" title="Final score">
-          <button type="submit" class="btn btn-green btn-sm">Save &amp; Sync</button>
+          <input type="text" name="actual" value="{{ match.result }}" title="Update result">
+          <button type="submit" class="btn btn-gray btn-sm">Update &amp; Sync</button>
         </form>
       </div>
-    {% endfor %}
-  </div>
-</div>
-{% endif %}
-
-{% if completed %}
-<div class="card">
-  <div class="card-hd">✅ Completed Matches ({{ completed|length }})</div>
-  <div class="card-body" style="padding:10px 18px">
-    {% for match in completed|reverse %}
-    <div class="match-result-row">
-      <div class="mr-name">{{ match.name }}</div>
-      <div class="mr-time">{{ fmt_dt(match.datetime) }}</div>
-      <div class="mr-result">{{ match.result }}</div>
-      <form method="post" action="{{ url_for('master_result') }}" class="mr-form">
-        <input type="hidden" name="match_id" value="{{ match.id }}">
-        <input type="text" name="actual" value="{{ match.result }}" title="Update result">
-        <button type="submit" class="btn btn-gray btn-sm">Update &amp; Sync</button>
-      </form>
-    </div>
-    {% endfor %}
-  </div>
-</div>
-{% endif %}
-
-{% if not upcoming and not completed %}
-<div class="card">
-  <div class="card-body" style="color:#888;text-align:center;padding:24px">
-    No matches found. Check that worldcup_2026.ics is present on the server.
-  </div>
-</div>
-{% endif %}
-
-<!-- All leagues -->
-<div class="card">
-  <div class="card-hd">🏟 All Leagues ({{ leagues|length }})</div>
-  {% if leagues %}
-  <table>
-    <thead>
-      <tr><th>Name</th><th>Code</th><th>Type</th><th>Players</th><th>Matches</th><th></th></tr>
-    </thead>
-    <tbody>
-      {% for code, info in leagues.items() %}
-      <tr>
-        <td><b>{{ info.name }}</b></td>
-        <td><span style="font-family:monospace;font-size:.85rem;background:#f5f5f5;
-                         border-radius:3px;padding:1px 6px">{{ code }}</span></td>
-        <td>{{ '🌍 Public' if info.is_public else '🔒 Private' }}</td>
-        <td class="c">{{ info.player_count }}</td>
-        <td class="c">{{ info.match_count }}</td>
-        <td style="white-space:nowrap">
-          <a href="{{ url_for('league_admin_dashboard', code=code) }}" class="btn btn-blue btn-sm">Manage</a>
-          <a href="{{ url_for('league_index', code=code) }}" class="btn btn-gray btn-sm" style="margin-left:4px">View</a>
-        </td>
-      </tr>
       {% endfor %}
-    </tbody>
-  </table>
-  {% else %}
-  <div class="card-body" style="color:#888;text-align:center;padding:20px">No leagues created yet.</div>
+    </div>
+  </div>
   {% endif %}
+
+  {% if not upcoming and not completed %}
+  <div class="card">
+    <div class="card-body" style="color:#888;text-align:center;padding:24px">
+      No matches found. Check that worldcup_2026.ics is present on the server.
+    </div>
+  </div>
+  {% endif %}
+
 </div>
+
+<!-- Leagues tab -->
+<div id="tab-leagues" class="tab-panel">
+  <div class="card">
+    <div class="card-hd">🏟 All Leagues ({{ leagues|length }})</div>
+    {% if leagues %}
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Code</th><th>Visibility</th><th>Players</th><th>Matches</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for code, info in leagues.items() %}
+        <tr>
+          <td><b>{{ info.name }}</b></td>
+          <td><span style="font-family:monospace;font-size:.85rem;background:#f5f5f5;
+                           border-radius:3px;padding:1px 6px">{{ code }}</span></td>
+          <td>{{ '🌍 Public' if info.is_public else '🔒 Private' }}</td>
+          <td class="c">{{ info.player_count }}</td>
+          <td class="c">{{ info.match_count }}</td>
+          <td style="white-space:nowrap">
+            <a href="{{ url_for('league_admin_dashboard', code=code) }}" class="btn btn-blue btn-sm">Manage</a>
+            <a href="{{ url_for('league_index', code=code) }}" class="btn btn-gray btn-sm" style="margin-left:4px">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="card-body" style="color:#888;text-align:center;padding:20px">No leagues created yet.</div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
 
 {% endblock %}
