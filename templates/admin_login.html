@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Admin Login – World Cup 2026{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:380px;margin:40px auto">
+  <div class="card-hd">Admin Login</div>
+  <div class="card-body">
+    <form method="post">
+      <div class="form-row">
+        <label for="pw">Password</label>
+        <input type="password" name="password" id="pw" autofocus placeholder="Enter admin password">
+      </div>
+      <button type="submit" class="btn btn-green" style="width:100%;margin-top:6px">Login</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

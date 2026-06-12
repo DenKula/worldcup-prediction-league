@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Scoreboard – World Cup 2026{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-hd">🏆 Standings</div>
+  <div style="font-size:.8rem;color:#666;padding:8px 18px;background:#fafafa;border-bottom:1px solid #eee">
+    Correct outcome: <b>{{ op }} pt</b> &nbsp;·&nbsp; Exact score bonus: <b>+{{ sp }} pt</b>
+  </div>
+  {% if ranked %}
+  <table>
+    <thead>
+      <tr><th>#</th><th>Player</th><th>Outcomes</th><th>Exact Scores</th><th>Points</th></tr>
+    </thead>
+    <tbody>
+      {% set medals = ['🥇','🥈','🥉'] %}
+      {% for name, stats in ranked %}
+      {% set total = stats.outcome_correct * op + stats.score_correct * sp %}
+      <tr class="{% if loop.index0 < 3 %}rank-{{ loop.index }}{% endif %}">
+        <td class="c">{{ medals[loop.index0] if loop.index0 < 3 else loop.index }}</td>
+        <td><b>{{ name }}</b></td>
+        <td class="c">{{ stats.outcome_correct }}</td>
+        <td class="c">{{ stats.score_correct }}</td>
+        <td class="c pts">{{ total }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="padding:18px;color:#888">No players yet.</p>
+  {% endif %}
+</div>
+
+{% if completed %}
+<div class="card">
+  <div class="card-hd">📅 Match Results</div>
+  <div style="font-size:.8rem;color:#666;padding:8px 18px;background:#fafafa;border-bottom:1px solid #eee;display:flex;gap:16px">
+    <span><span style="background:#c8e6c9;border-radius:3px;padding:1px 6px;font-size:.75rem">2-1</span> Exact score</span>
+    <span><span style="background:#fff9c4;border-radius:3px;padding:1px 6px;font-size:.75rem">2-1</span> Correct outcome</span>
+    <span><span style="background:#ffebee;border-radius:3px;padding:1px 6px;font-size:.75rem">2-1</span> Wrong</span>
+  </div>
+  <div style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Match</th>
+        <th>Result</th>
+        <th>Date</th>
+        {% for name, _ in ranked %}<th>{{ name }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for match in completed %}
+      <tr>
+        <td style="font-weight:600;min-width:160px">{{ match.name }}</td>
+        <td class="c" style="font-weight:800;color:#1a6b3c">{{ match.result }}</td>
+        <td class="c muted" style="font-size:.8rem">{{ fmt_dt(match.datetime) }}</td>
+        {% for name, _ in ranked %}
+          {% set pred = match.predictions.get(name, '') %}
+          <td class="c">
+            {% if pred %}
+              {% set cls = prediction_class(pred, match.result) %}
+              <span class="{{ cls }}">{{ pred }}</span>
+            {% else %}
+              <span class="muted">-</span>
+            {% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endif %}
+
+{% if upcoming %}
+<div class="card">
+  <div class="card-hd">🗓 Upcoming Matches ({{ upcoming|length }})</div>
+  <table>
+    <thead><tr><th>Match</th><th>Date</th><th>Predictions</th></tr></thead>
+    <tbody>
+      {% for match in upcoming[:10] %}
+      <tr>
+        <td style="font-weight:600">{{ match.name }}</td>
+        <td class="muted" style="font-size:.8rem">{{ fmt_dt(match.datetime) }}</td>
+        <td class="c">{{ match.predictions|length }} / {{ ranked|length }}</td>
+      </tr>
+      {% endfor %}
+      {% if upcoming|length > 10 %}
+      <tr><td colspan="3" class="c muted" style="font-size:.82rem">… and {{ upcoming|length - 10 }} more</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

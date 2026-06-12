@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block title %}Admin – World Cup 2026{% endblock %}
+
+{% block extra_head %}
+<style>
+.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.admin-grid{grid-template-columns:1fr}}
+.inline-form{display:flex;gap:8px;align-items:flex-end}
+.inline-form input{flex:1}
+.match-result-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f0f0f0}
+.match-result-row:last-child{border-bottom:none}
+.mr-name{flex:1;font-size:.88rem;font-weight:500}
+.mr-time{font-size:.78rem;color:#888;white-space:nowrap;min-width:80px}
+.mr-preds{font-size:.78rem;color:#666;min-width:55px;text-align:center}
+.mr-result{font-weight:800;color:#1a6b3c;min-width:50px;text-align:center}
+.mr-form{display:flex;gap:6px;align-items:center}
+.mr-form input{width:80px}
+.section-title{font-size:.78rem;font-weight:700;color:#2d8653;text-transform:uppercase;
+               letter-spacing:.5px;margin:16px 0 8px}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-grid">
+
+  <!-- Players -->
+  <div class="card">
+    <div class="card-hd">Players ({{ data.players|length }})</div>
+    <div class="card-body">
+      {% if data.players %}
+      <table style="margin-bottom:14px">
+        <thead><tr><th>Name</th><th>Outcomes</th><th>Exact</th><th></th></tr></thead>
+        <tbody>
+          {% for name, stats in data.players.items()|sort %}
+          <tr>
+            <td><b>{{ name }}</b></td>
+            <td class="c">{{ stats.outcome_correct }}</td>
+            <td class="c">{{ stats.score_correct }}</td>
+            <td>
+              <form method="post" action="{{ url_for('admin_remove_player') }}" style="margin:0"
+                    onsubmit="return confirm('Remove {{ name }}?')">
+                <input type="hidden" name="name" value="{{ name }}">
+                <button type="submit" class="btn btn-red btn-sm">Remove</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="muted" style="margin-bottom:14px">No players yet.</p>
+      {% endif %}
+      <form method="post" action="{{ url_for('admin_add_player') }}">
+        <div class="inline-form">
+          <div>
+            <label>Add player</label>
+            <input type="text" name="name" placeholder="Player name" required>
+          </div>
+          <button type="submit" class="btn btn-green btn-sm">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings & Import -->
+  <div>
+    <div class="card">
+      <div class="card-hd">Point Settings</div>
+      <div class="card-body">
+        <form method="post" action="{{ url_for('admin_settings') }}">
+          <div class="inline-form" style="margin-bottom:10px">
+            <div>
+              <label>Correct outcome</label>
+              <input type="text" name="outcome_points" value="{{ data.settings.outcome_points }}" style="width:70px">
+            </div>
+            <div>
+              <label>Exact score bonus</label>
+              <input type="text" name="score_points" value="{{ data.settings.score_points }}" style="width:70px">
+            </div>
+            <button type="submit" class="btn btn-gray btn-sm">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">Import Matches from ICS URL</div>
+      <div class="card-body">
+        <form method="post" action="{{ url_for('admin_import_ics') }}">
+          <div class="form-row">
+            <label>ICS calendar URL</label>
+            <input type="text" name="ics_url" placeholder="https://…/calendar.ics">
+            <p class="note">Adds new matches only (won't overwrite existing ones).</p>
+          </div>
+          <button type="submit" class="btn btn-green btn-sm">Import</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Matches -->
+{% set completed = data.matches | selectattr('result') | list %}
+{% set upcoming  = data.matches | rejectattr('result') | list %}
+
+{% if upcoming %}
+<div class="card">
+  <div class="card-hd">⏳ Upcoming Matches ({{ upcoming|length }})</div>
+  <div class="card-body" style="padding:10px 18px">
+    {% set ns = namespace(current_date='') %}
+    {% for match in upcoming %}
+      {% set mdate = match.datetime[:10] %}
+      {% if mdate != ns.current_date %}
+        {% set ns.current_date = mdate %}
+        <div class="section-title">{{ fmt_dt(match.datetime).split(',')[0] }}</div>
+      {% endif %}
+      <div class="match-result-row">
+        <div class="mr-name">{{ match.name }}</div>
+        <div class="mr-time">{{ fmt_dt(match.datetime) }}</div>
+        <div class="mr-preds" title="predictions submitted">
+          {{ match.predictions|length }}/{{ data.players|length }} pred.
+        </div>
+        <form method="post" action="{{ url_for('admin_result') }}" class="mr-form">
+          <input type="hidden" name="match_id" value="{{ match.id }}">
+          <input type="text" name="actual" placeholder="2-1" title="Actual score">
+          <button type="submit" class="btn btn-green btn-sm">Save</button>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if completed %}
+<div class="card">
+  <div class="card-hd">✅ Completed Matches ({{ completed|length }})</div>
+  <div class="card-body" style="padding:10px 18px">
+    {% for match in completed|reverse %}
+    <div class="match-result-row">
+      <div class="mr-name">{{ match.name }}</div>
+      <div class="mr-time">{{ fmt_dt(match.datetime) }}</div>
+      <div class="mr-result">{{ match.result }}</div>
+      <form method="post" action="{{ url_for('admin_result') }}" class="mr-form">
+        <input type="hidden" name="match_id" value="{{ match.id }}">
+        <input type="text" name="actual" value="{{ match.result }}" title="Edit result">
+        <button type="submit" class="btn btn-gray btn-sm">Update</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if not data.matches %}
+<div class="card">
+  <div class="card-body" style="color:#888;text-align:center;padding:24px">
+    No matches imported yet. Use the ICS import above.
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
