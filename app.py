@@ -187,7 +187,7 @@ def predict():
         save_data(data)
         session["player"] = player
         flash(f"Predictions saved for {player}!", "success")
-        return redirect(url_for("predict"))
+        return redirect(url_for("predict") + f"?player={player}")
 
     player = request.args.get("player") or session.get("player", "")
     upcoming = [m for m in data["matches"] if not m.get("result")]

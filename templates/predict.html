@@ -21,7 +21,7 @@
   <div class="card-hd">My Predictions</div>
   <div class="card-body">
 
-    <form method="post" id="pred-form">
+    <form method="get" id="player-form">
       <div class="form-row">
         <label for="player-select">Your name</label>
         <select name="player" id="player-select" onchange="this.form.submit()" style="max-width:280px">
@@ -32,6 +32,10 @@
         </select>
         <p class="note">Select your name to see and edit your predictions.</p>
       </div>
+    </form>
+
+    <form method="post" id="pred-form">
+      <input type="hidden" name="player" value="{{ player }}">
 
       {% if player %}
       <hr style="border:none;border-top:1px solid #e5e5e5;margin:16px 0">
