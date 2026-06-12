@@ -273,6 +273,43 @@ def admin_remove_player():
     return redirect(url_for("admin_dashboard"))
 
 
+def _parse_ics_bytes(raw: bytes) -> list:
+    from icalendar import Calendar as ICal
+    cal = ICal.from_ical(raw)
+    matches = []
+    for comp in cal.walk():
+        if comp.name != "VEVENT": continue
+        summary = str(comp.get("SUMMARY", "")).strip()
+        if not summary: continue
+        dtstart = comp.get("DTSTART")
+        if dtstart is None: continue
+        dt_str = dtstart.dt.isoformat()
+        location = str(comp.get("LOCATION", "")).strip()
+        score_m = re.search(r'\((\d+)[-–](\d+)\)\s*$', summary)
+        inline_result = None
+        if score_m:
+            inline_result = f"{score_m.group(1)}-{score_m.group(2)}"
+            summary = summary[:score_m.start()].strip()
+        matches.append({
+            "id": str(uuid.uuid4()),
+            "name": summary,
+            "datetime": dt_str,
+            "venue": location,
+            "round": "",
+            "result": inline_result,
+            "predictions": {},
+        })
+    matches.sort(key=lambda m: m["datetime"])
+    return matches
+
+
+def _merge_ics_matches(data: dict, new_matches: list):
+    existing_keys = {(m["name"], m["datetime"]) for m in data["matches"]}
+    added = [m for m in new_matches if (m["name"], m["datetime"]) not in existing_keys]
+    data["matches"].extend(added)
+    return len(added)
+
+
 @app.route("/admin/import_ics", methods=["POST"])
 @admin_required
 def admin_import_ics():
@@ -283,39 +320,30 @@ def admin_import_ics():
         return redirect(url_for("admin_dashboard"))
     try:
         import requests as req
-        from icalendar import Calendar as ICal
         resp = req.get(url, timeout=20, headers={"User-Agent": "WC2026Scoreboard/1.0"})
         resp.raise_for_status()
-        cal = ICal.from_ical(resp.content)
-        new_matches = []
-        for comp in cal.walk():
-            if comp.name != "VEVENT": continue
-            summary = str(comp.get("SUMMARY", "")).strip()
-            if not summary: continue
-            dtstart = comp.get("DTSTART")
-            if dtstart is None: continue
-            dt_str = dtstart.dt.isoformat()
-            location = str(comp.get("LOCATION", "")).strip()
-            score_m = re.search(r'\((\d+)[-–](\d+)\)\s*$', summary)
-            inline_result = None
-            if score_m:
-                inline_result = f"{score_m.group(1)}-{score_m.group(2)}"
-                summary = summary[:score_m.start()].strip()
-            new_matches.append({
-                "id": str(uuid.uuid4()),
-                "name": summary,
-                "datetime": dt_str,
-                "venue": location,
-                "round": "",
-                "result": inline_result,
-                "predictions": {},
-            })
-        new_matches.sort(key=lambda m: m["datetime"])
-        existing_keys = {(m["name"], m["datetime"]) for m in data["matches"]}
-        added = [m for m in new_matches if (m["name"], m["datetime"]) not in existing_keys]
-        data["matches"].extend(added)
+        new_matches = _parse_ics_bytes(resp.content)
+        added = _merge_ics_matches(data, new_matches)
         save_data(data)
-        flash(f"Imported {len(added)} new matches.", "success")
+        flash(f"Imported {added} new matches.", "success")
+    except Exception as e:
+        flash(f"Import failed: {e}", "error")
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/admin/import_ics_file", methods=["POST"])
+@admin_required
+def admin_import_ics_file():
+    data = load_data()
+    f = request.files.get("ics_file")
+    if not f or not f.filename:
+        flash("Choose an .ics file first.", "error")
+        return redirect(url_for("admin_dashboard"))
+    try:
+        new_matches = _parse_ics_bytes(f.read())
+        added = _merge_ics_matches(data, new_matches)
+        save_data(data)
+        flash(f"Imported {added} new matches from file.", "success")
     except Exception as e:
         flash(f"Import failed: {e}", "error")
     return redirect(url_for("admin_dashboard"))

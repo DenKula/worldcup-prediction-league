@@ -85,16 +85,24 @@
     </div>
 
     <div class="card">
-      <div class="card-hd">Import Matches from ICS URL</div>
+      <div class="card-hd">Import Matches</div>
       <div class="card-body">
+        <form method="post" action="{{ url_for('admin_import_ics_file') }}" enctype="multipart/form-data">
+          <div class="form-row">
+            <label>Upload .ics file</label>
+            <input type="file" name="ics_file" accept=".ics,.ical" style="font-size:.85rem">
+          </div>
+          <button type="submit" class="btn btn-green btn-sm">Upload &amp; Import</button>
+        </form>
+        <hr style="border:none;border-top:1px solid #eee;margin:14px 0">
         <form method="post" action="{{ url_for('admin_import_ics') }}">
           <div class="form-row">
-            <label>ICS calendar URL</label>
+            <label>Or import from URL</label>
             <input type="text" name="ics_url" placeholder="https://…/calendar.ics">
-            <p class="note">Adds new matches only (won't overwrite existing ones).</p>
           </div>
-          <button type="submit" class="btn btn-green btn-sm">Import</button>
+          <button type="submit" class="btn btn-gray btn-sm">Import from URL</button>
         </form>
+        <p class="note" style="margin-top:8px">Adds new matches only — won't overwrite existing ones.</p>
       </div>
     </div>
   </div>
