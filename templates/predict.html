@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}My Predictions – World Cup 2026{% endblock %}
+{% block title %}My Predictions – {{ league_name }}{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -18,7 +18,7 @@
 
 {% block content %}
 <div class="card">
-  <div class="card-hd">My Predictions</div>
+  <div class="card-hd">My Predictions — {{ league_name }}</div>
   <div class="card-body">
 
     <form method="get" id="player-form">

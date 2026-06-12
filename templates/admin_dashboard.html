@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Admin – World Cup 2026{% endblock %}
+{% block title %}Admin – {{ league_name }}{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -17,10 +17,30 @@
 .mr-form input{width:80px}
 .section-title{font-size:.78rem;font-weight:700;color:#2d8653;text-transform:uppercase;
                letter-spacing:.5px;margin:16px 0 8px}
+.code-box{font-family:monospace;background:#f5f5f5;border:1px solid #ddd;border-radius:6px;
+          padding:10px 16px;font-size:1.2rem;letter-spacing:4px;text-align:center;color:#1a6b3c;
+          font-weight:800;margin:8px 0}
 </style>
 {% endblock %}
 
 {% block content %}
+
+<!-- League info banner -->
+<div class="card">
+  <div class="card-hd">League Info</div>
+  <div class="card-body" style="display:flex;gap:24px;flex-wrap:wrap;align-items:center">
+    <div>
+      <div style="font-size:.78rem;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.4px">League code</div>
+      <div class="code-box">{{ code }}</div>
+      <div class="note">Share this code or the full URL with friends.</div>
+    </div>
+    <div style="flex:1;min-width:200px">
+      <div style="font-size:.78rem;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Share link</div>
+      <input type="text" value="{{ request.host_url }}league/{{ code }}/"
+             onclick="this.select()" readonly style="font-size:.8rem;color:#555">
+    </div>
+  </div>
+</div>
 
 <div class="admin-grid">
 
@@ -38,7 +58,7 @@
             <td class="c">{{ stats.outcome_correct }}</td>
             <td class="c">{{ stats.score_correct }}</td>
             <td>
-              <form method="post" action="{{ url_for('admin_remove_player') }}" style="margin:0"
+              <form method="post" action="{{ url_for('league_admin_remove_player', code=code) }}" style="margin:0"
                     onsubmit="return confirm('Remove {{ name }}?')">
                 <input type="hidden" name="name" value="{{ name }}">
                 <button type="submit" class="btn btn-red btn-sm">Remove</button>
@@ -51,7 +71,7 @@
       {% else %}
       <p class="muted" style="margin-bottom:14px">No players yet.</p>
       {% endif %}
-      <form method="post" action="{{ url_for('admin_add_player') }}">
+      <form method="post" action="{{ url_for('league_admin_add_player', code=code) }}">
         <div class="inline-form">
           <div>
             <label>Add player</label>
@@ -68,7 +88,7 @@
     <div class="card">
       <div class="card-hd">Point Settings</div>
       <div class="card-body">
-        <form method="post" action="{{ url_for('admin_settings') }}">
+        <form method="post" action="{{ url_for('league_admin_settings', code=code) }}">
           <div class="inline-form" style="margin-bottom:10px">
             <div>
               <label>Correct outcome</label>
@@ -87,7 +107,7 @@
     <div class="card">
       <div class="card-hd">Import Matches</div>
       <div class="card-body">
-        <form method="post" action="{{ url_for('admin_import_ics_file') }}" enctype="multipart/form-data">
+        <form method="post" action="{{ url_for('league_admin_import_ics_file', code=code) }}" enctype="multipart/form-data">
           <div class="form-row">
             <label>Upload .ics file</label>
             <input type="file" name="ics_file" accept=".ics,.ical" style="font-size:.85rem">
@@ -95,7 +115,7 @@
           <button type="submit" class="btn btn-green btn-sm">Upload &amp; Import</button>
         </form>
         <hr style="border:none;border-top:1px solid #eee;margin:14px 0">
-        <form method="post" action="{{ url_for('admin_import_ics') }}">
+        <form method="post" action="{{ url_for('league_admin_import_ics', code=code) }}">
           <div class="form-row">
             <label>Or import from URL</label>
             <input type="text" name="ics_url" placeholder="https://…/calendar.ics">
@@ -130,12 +150,13 @@
         <div class="mr-preds" title="predictions submitted">
           {{ match.predictions|length }}/{{ data.players|length }} pred.
         </div>
-        <form method="post" action="{{ url_for('admin_result') }}" class="mr-form">
+        <form method="post" action="{{ url_for('league_admin_result', code=code) }}" class="mr-form">
           <input type="hidden" name="match_id" value="{{ match.id }}">
           <input type="text" name="actual" placeholder="2-1" title="Actual score">
           <button type="submit" class="btn btn-green btn-sm">Save</button>
         </form>
-        <a href="{{ url_for('admin_edit_match', match_id=match.id) }}" class="btn btn-gray btn-sm">Edit Predictions</a>
+        <a href="{{ url_for('league_admin_edit_match', code=code, match_id=match.id) }}"
+           class="btn btn-gray btn-sm">Edit Predictions</a>
       </div>
     {% endfor %}
   </div>
@@ -151,12 +172,13 @@
       <div class="mr-name">{{ match.name }}</div>
       <div class="mr-time">{{ fmt_dt(match.datetime) }}</div>
       <div class="mr-result">{{ match.result }}</div>
-      <form method="post" action="{{ url_for('admin_result') }}" class="mr-form">
+      <form method="post" action="{{ url_for('league_admin_result', code=code) }}" class="mr-form">
         <input type="hidden" name="match_id" value="{{ match.id }}">
         <input type="text" name="actual" value="{{ match.result }}" title="Edit result">
         <button type="submit" class="btn btn-gray btn-sm">Update</button>
       </form>
-      <a href="{{ url_for('admin_edit_match', match_id=match.id) }}" class="btn btn-gray btn-sm">Edit Predictions</a>
+      <a href="{{ url_for('league_admin_edit_match', code=code, match_id=match.id) }}"
+         class="btn btn-gray btn-sm">Edit Predictions</a>
     </div>
     {% endfor %}
   </div>
@@ -166,7 +188,7 @@
 {% if not data.matches %}
 <div class="card">
   <div class="card-body" style="color:#888;text-align:center;padding:24px">
-    No matches imported yet. Use the ICS import above.
+    No matches yet. Use the ICS import above.
   </div>
 </div>
 {% endif %}

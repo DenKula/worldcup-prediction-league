@@ -10,7 +10,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f0;color:#11
 nav{background:linear-gradient(135deg,#1a6b3c,#2d8653);color:white;padding:0 20px;
     display:flex;align-items:center;justify-content:space-between;height:54px;
     box-shadow:0 2px 8px rgba(0,0,0,.15)}
-.nav-title{font-size:1.05rem;font-weight:800;letter-spacing:-.3px}
+.nav-title{font-size:1.05rem;font-weight:800;letter-spacing:-.3px;text-decoration:none;color:white}
 .nav-links a{color:rgba(255,255,255,.85);text-decoration:none;font-size:.88rem;
              font-weight:600;margin-left:16px;padding:4px 0;border-bottom:2px solid transparent}
 .nav-links a:hover,.nav-links a.active{color:white;border-bottom-color:rgba(255,255,255,.6)}
@@ -46,6 +46,7 @@ span.wrong  {display:inline-block;background:#e0e0e0;color:#555;border-radius:4p
 .btn-green{background:#2d8653;color:white}
 .btn-red  {background:#c0392b;color:white}
 .btn-gray {background:#7f8c8d;color:white}
+.btn-blue {background:#1565c0;color:white}
 .btn-sm{padding:4px 10px;font-size:.78rem;border-radius:4px}
 input[type=text],input[type=password],select{
   border:1px solid #bbb;border-radius:4px;padding:7px 10px;font-size:.9rem;width:100%}
@@ -63,17 +64,28 @@ label{font-size:.85rem;font-weight:600;color:#333;display:block;margin-bottom:4p
 </head>
 <body>
 <nav>
-  <span class="nav-title">⚽ World Cup 2026 Predictions</span>
-  <div class="nav-links">
-    <a href="{{ url_for('index') }}" {% if request.endpoint=='index' %}class="active"{% endif %}>Scoreboard</a>
-    <a href="{{ url_for('predict') }}" {% if request.endpoint=='predict' %}class="active"{% endif %}>My Predictions</a>
-    {% if session.get('admin') %}
-    <a href="{{ url_for('admin_dashboard') }}" {% if request.endpoint=='admin_dashboard' %}class="active"{% endif %}>Admin</a>
-    <a href="{{ url_for('admin_logout') }}">Logout</a>
-    {% else %}
-    <a href="{{ url_for('admin_login') }}">Admin</a>
-    {% endif %}
-  </div>
+  {% if code is defined and code %}
+    <a href="{{ url_for('league_index', code=code) }}" class="nav-title">⚽ {{ league_name }}</a>
+    <div class="nav-links">
+      <a href="{{ url_for('lobby') }}">← All Leagues</a>
+      <a href="{{ url_for('league_index', code=code) }}"
+         {% if request.endpoint=='league_index' %}class="active"{% endif %}>Scoreboard</a>
+      <a href="{{ url_for('league_predict', code=code) }}"
+         {% if request.endpoint=='league_predict' %}class="active"{% endif %}>My Predictions</a>
+      {% if session.get('admin_' ~ code) %}
+        <a href="{{ url_for('league_admin_dashboard', code=code) }}"
+           {% if request.endpoint=='league_admin_dashboard' %}class="active"{% endif %}>Admin</a>
+        <a href="{{ url_for('league_admin_logout', code=code) }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('league_admin_login', code=code) }}">Admin</a>
+      {% endif %}
+    </div>
+  {% else %}
+    <span class="nav-title">⚽ World Cup 2026 Predictions</span>
+    <div class="nav-links">
+      <a href="{{ url_for('lobby') }}">Home</a>
+    </div>
+  {% endif %}
 </nav>
 <div class="wrap">
   {% with messages = get_flashed_messages(with_categories=True) %}

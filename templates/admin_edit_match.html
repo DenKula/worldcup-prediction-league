@@ -3,7 +3,7 @@
 
 {% block content %}
 <div style="margin-bottom:16px">
-  <a href="{{ url_for('admin_dashboard') }}" class="btn btn-gray btn-sm">← Back to Admin</a>
+  <a href="{{ url_for('league_admin_dashboard', code=code) }}" class="btn btn-gray btn-sm">← Back to Admin</a>
 </div>
 
 <div class="card">
@@ -42,7 +42,7 @@
 
       <div style="margin-top:18px">
         <button type="submit" class="btn btn-green">Save Predictions</button>
-        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-gray" style="margin-left:8px">Cancel</a>
+        <a href="{{ url_for('league_admin_dashboard', code=code) }}" class="btn btn-gray" style="margin-left:8px">Cancel</a>
       </div>
     </form>
   </div>

@@ -1,11 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Scoreboard – World Cup 2026{% endblock %}
+{% block title %}Scoreboard – {{ league_name }}{% endblock %}
 
 {% block content %}
 <div class="card">
   <div class="card-hd">🏆 Standings</div>
   <div style="font-size:.8rem;color:#666;padding:8px 18px;background:#fafafa;border-bottom:1px solid #eee">
     Correct outcome: <b>{{ op }} pt</b> &nbsp;·&nbsp; Exact score bonus: <b>+{{ sp }} pt</b>
+    &nbsp;·&nbsp; <span style="font-family:monospace;background:#f0f0f0;border-radius:3px;
+    padding:1px 6px;font-size:.75rem;color:#555">Code: {{ code }}</span>
   </div>
   {% if ranked %}
   <table>
@@ -34,8 +36,10 @@
 {% if completed %}
 <div class="card">
   <div class="card-hd">📅 Match Results</div>
-  <div style="font-size:.8rem;color:#666;padding:8px 18px;background:#fafafa;border-bottom:1px solid #eee;display:flex;gap:16px">
-    <span><span style="position:relative;display:inline-block;background:#1565c0;color:white;border-radius:3px;padding:2px 6px;font-size:.75rem"><span style="position:absolute;top:-6px;left:-3px;font-size:9px;color:#ffd700">★</span>2-1</span> Exact score</span>
+  <div style="font-size:.8rem;color:#666;padding:8px 18px;background:#fafafa;border-bottom:1px solid #eee;display:flex;gap:16px;flex-wrap:wrap">
+    <span><span style="position:relative;display:inline-block;background:#1565c0;color:white;
+      border-radius:3px;padding:2px 6px;font-size:.75rem"><span style="position:absolute;top:-6px;
+      left:-3px;font-size:9px;color:#ffd700">★</span>2-1</span> Exact score</span>
     <span><span style="background:#c8e6c9;color:#1b5e20;border-radius:3px;padding:2px 6px;font-size:.75rem">2-1</span> Correct outcome</span>
     <span><span style="background:#e0e0e0;color:#555;border-radius:3px;padding:2px 6px;font-size:.75rem">2-1</span> Wrong</span>
   </div>
@@ -59,8 +63,7 @@
           {% set pred = match.predictions.get(name, '') %}
           <td class="c">
             {% if pred %}
-              {% set cls = prediction_class(pred, match.result) %}
-              <span class="{{ cls }}">{{ pred }}</span>
+              <span class="{{ prediction_class(pred, match.result) }}">{{ pred }}</span>
             {% else %}
               <span class="muted">-</span>
             {% endif %}
