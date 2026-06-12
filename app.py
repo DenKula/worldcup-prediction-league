@@ -269,12 +269,18 @@ def create_league():
     code = gen_code()
     matches = []
 
-    if template == "worldcup" and os.path.exists(ICS_TEMPLATE):
-        try:
-            with open(ICS_TEMPLATE, "rb") as f:
-                matches = _parse_ics_bytes(f.read())
-        except Exception as e:
-            flash(f"Could not load World Cup template: {e}", "error")
+    if template == "worldcup":
+        master = load_master()
+        for m in master["matches"]:
+            matches.append({
+                "id": str(uuid.uuid4()),
+                "name": m["name"],
+                "datetime": m["datetime"],
+                "venue": m.get("venue", ""),
+                "round": m.get("round", ""),
+                "result": m.get("result"),
+                "predictions": {},
+            })
 
     data = {
         "meta": {
