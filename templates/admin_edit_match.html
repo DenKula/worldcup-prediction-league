@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Edit Predictions – {{ match.name }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:16px">
+  <a href="{{ url_for('admin_dashboard') }}" class="btn btn-gray btn-sm">← Back to Admin</a>
+</div>
+
+<div class="card">
+  <div class="card-hd">Edit Predictions — {{ match.name }}</div>
+  <div class="card-body">
+    <p style="font-size:.85rem;color:#666;margin-bottom:16px">
+      {{ fmt_dt(match.datetime) }}
+      {% if match.result %}
+        &nbsp;·&nbsp; Result: <b style="color:#1a6b3c">{{ match.result }}</b>
+        &nbsp;·&nbsp; <span style="color:#888">Scores are recalculated automatically when you save.</span>
+      {% else %}
+        &nbsp;·&nbsp; <span style="color:#e67e22">Not played yet — saving won't affect scores.</span>
+      {% endif %}
+    </p>
+
+    <form method="post">
+      <table>
+        <thead>
+          <tr><th>Player</th><th>Prediction</th></tr>
+        </thead>
+        <tbody>
+          {% for player in players %}
+          <tr>
+            <td><b>{{ player }}</b></td>
+            <td>
+              <input type="text"
+                     name="pred_{{ player }}"
+                     value="{{ match.predictions.get(player, '') }}"
+                     placeholder="e.g. 2-1"
+                     style="width:90px">
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div style="margin-top:18px">
+        <button type="submit" class="btn btn-green">Save Predictions</button>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-gray" style="margin-left:8px">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

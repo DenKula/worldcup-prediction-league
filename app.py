@@ -349,6 +349,68 @@ def admin_import_ics_file():
     return redirect(url_for("admin_dashboard"))
 
 
+@app.route("/admin/match/<match_id>", methods=["GET", "POST"])
+@admin_required
+def admin_edit_match(match_id):
+    data = load_data()
+    match = next((m for m in data["matches"] if m["id"] == match_id), None)
+    if not match:
+        flash("Match not found.", "error")
+        return redirect(url_for("admin_dashboard"))
+
+    if request.method == "POST":
+        players = list(data["players"].keys())
+
+        # If match has a result, undo old prediction scores before saving new ones
+        if match.get("result"):
+            old_result = match["result"]
+            old_outcome = get_outcome(old_result)
+            for player, pred in match.get("predictions", {}).items():
+                if player not in data["players"]: continue
+                try: parse_score(pred)
+                except: continue
+                s = data["players"][player]
+                if pred == old_result:
+                    s["outcome_correct"] = max(0, s["outcome_correct"] - 1)
+                    s["score_correct"]   = max(0, s["score_correct"]   - 1)
+                elif get_outcome(pred) == old_outcome:
+                    s["outcome_correct"] = max(0, s["outcome_correct"] - 1)
+
+        # Save new predictions
+        new_preds = {}
+        for player in players:
+            pred = request.form.get(f"pred_{player}", "").strip()
+            if pred:
+                try:
+                    parse_score(pred)
+                    new_preds[player] = pred
+                except ValueError:
+                    flash(f"Invalid score '{pred}' for {player} — use 2-1 format.", "error")
+                    return redirect(url_for("admin_edit_match", match_id=match_id))
+        match["predictions"] = new_preds
+
+        # Re-apply scores if match already has a result
+        if match.get("result"):
+            result = match["result"]
+            result_outcome = get_outcome(result)
+            for player, pred in new_preds.items():
+                if player not in data["players"]: continue
+                s = data["players"][player]
+                if pred == result:
+                    s["outcome_correct"] += 1
+                    s["score_correct"]   += 1
+                elif get_outcome(pred) == result_outcome:
+                    s["outcome_correct"] += 1
+
+        save_data(data)
+        flash("Predictions updated.", "success")
+        return redirect(url_for("admin_edit_match", match_id=match_id))
+
+    players = sorted(data["players"].keys())
+    return render_template("admin_edit_match.html", match=match, players=players,
+                           fmt_dt=fmt_dt)
+
+
 @app.route("/admin/settings", methods=["POST"])
 @admin_required
 def admin_settings():

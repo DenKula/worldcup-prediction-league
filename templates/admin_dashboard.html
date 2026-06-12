@@ -135,6 +135,7 @@
           <input type="text" name="actual" placeholder="2-1" title="Actual score">
           <button type="submit" class="btn btn-green btn-sm">Save</button>
         </form>
+        <a href="{{ url_for('admin_edit_match', match_id=match.id) }}" class="btn btn-gray btn-sm">Edit Predictions</a>
       </div>
     {% endfor %}
   </div>
@@ -155,6 +156,7 @@
         <input type="text" name="actual" value="{{ match.result }}" title="Edit result">
         <button type="submit" class="btn btn-gray btn-sm">Update</button>
       </form>
+      <a href="{{ url_for('admin_edit_match', match_id=match.id) }}" class="btn btn-gray btn-sm">Edit Predictions</a>
     </div>
     {% endfor %}
   </div>
