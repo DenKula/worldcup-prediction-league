@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}World Cup Master Admin – Dashboard{% endblock %}
+
+{% block extra_head %}
+<style>
+.match-result-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f0f0}
+.match-result-row:last-child{border-bottom:none}
+.mr-name{flex:1;font-size:.88rem;font-weight:500}
+.mr-time{font-size:.78rem;color:#888;white-space:nowrap;min-width:110px}
+.mr-result{font-weight:800;color:#1a6b3c;min-width:50px;text-align:center}
+.mr-form{display:flex;gap:6px;align-items:center}
+.mr-form input{width:80px}
+.section-title{font-size:.78rem;font-weight:700;color:#2d8653;text-transform:uppercase;
+               letter-spacing:.5px;margin:16px 0 8px}
+.sync-badge{background:#1565c0;color:white;border-radius:20px;padding:3px 12px;
+            font-size:.78rem;font-weight:700}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+  <div>
+    <h1 style="font-size:1.3rem;font-weight:900;color:#1a6b3c">⚽ World Cup Master Admin</h1>
+    <p style="font-size:.85rem;color:#777;margin-top:4px">
+      Results recorded here sync automatically to
+      <span class="sync-badge">{{ league_count }} league{{ 's' if league_count != 1 }}</span>
+    </p>
+  </div>
+  <a href="{{ url_for('master_logout') }}" class="btn btn-gray btn-sm">Logout</a>
+</div>
+
+{% if upcoming %}
+<div class="card">
+  <div class="card-hd">⏳ Upcoming Matches ({{ upcoming|length }})</div>
+  <div class="card-body" style="padding:10px 18px">
+    {% set ns = namespace(current_date='') %}
+    {% for match in upcoming %}
+      {% set mdate = match.datetime[:10] %}
+      {% if mdate != ns.current_date %}
+        {% set ns.current_date = mdate %}
+        <div class="section-title">{{ fmt_dt(match.datetime).split(',')[0] }}</div>
+      {% endif %}
+      <div class="match-result-row">
+        <div class="mr-name">{{ match.name }}</div>
+        <div class="mr-time">{{ fmt_dt(match.datetime) }}</div>
+        <form method="post" action="{{ url_for('master_result') }}" class="mr-form">
+          <input type="hidden" name="match_id" value="{{ match.id }}">
+          <input type="text" name="actual" placeholder="2-1" title="Final score">
+          <button type="submit" class="btn btn-green btn-sm">Save &amp; Sync</button>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if completed %}
+<div class="card">
+  <div class="card-hd">✅ Completed Matches ({{ completed|length }})</div>
+  <div class="card-body" style="padding:10px 18px">
+    {% for match in completed|reverse %}
+    <div class="match-result-row">
+      <div class="mr-name">{{ match.name }}</div>
+      <div class="mr-time">{{ fmt_dt(match.datetime) }}</div>
+      <div class="mr-result">{{ match.result }}</div>
+      <form method="post" action="{{ url_for('master_result') }}" class="mr-form">
+        <input type="hidden" name="match_id" value="{{ match.id }}">
+        <input type="text" name="actual" value="{{ match.result }}" title="Update result">
+        <button type="submit" class="btn btn-gray btn-sm">Update &amp; Sync</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if not upcoming and not completed %}
+<div class="card">
+  <div class="card-body" style="color:#888;text-align:center;padding:24px">
+    No matches found. Check that worldcup_2026.ics is present on the server.
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

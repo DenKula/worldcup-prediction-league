@@ -16,10 +16,12 @@ from flask import (
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "wc2026-change-me-in-prod")
 
-DATA_DIR   = os.environ.get("DATA_DIR", os.path.join(os.path.dirname(__file__), "data"))
-LEAGUES_DIR = os.path.join(DATA_DIR, "leagues")
-INDEX_FILE  = os.path.join(DATA_DIR, "leagues_index.json")
-ICS_TEMPLATE = os.path.join(os.path.dirname(__file__), "worldcup_2026.ics")
+DATA_DIR        = os.environ.get("DATA_DIR", os.path.join(os.path.dirname(__file__), "data"))
+LEAGUES_DIR     = os.path.join(DATA_DIR, "leagues")
+INDEX_FILE      = os.path.join(DATA_DIR, "leagues_index.json")
+MASTER_FILE     = os.path.join(DATA_DIR, "worldcup_master.json")
+ICS_TEMPLATE    = os.path.join(os.path.dirname(__file__), "worldcup_2026.ics")
+MASTER_PASSWORD = os.environ.get("MASTER_PASSWORD", "master-admin")
 
 _lock = threading.Lock()
 
@@ -613,6 +615,121 @@ def league_admin_settings(code):
 def league_admin_logout(code):
     session.pop(f"admin_{code}", None)
     return redirect(url_for("league_index", code=code))
+
+
+# ── World Cup master admin ────────────────────────────────────────────────────
+
+def load_master():
+    ensure_dirs()
+    if os.path.exists(MASTER_FILE):
+        with open(MASTER_FILE) as f:
+            return json.load(f)
+    # Bootstrap from ICS template on first load
+    matches = []
+    if os.path.exists(ICS_TEMPLATE):
+        try:
+            with open(ICS_TEMPLATE, "rb") as f:
+                matches = _parse_ics_bytes(f.read())
+        except Exception:
+            pass
+    data = {"matches": matches}
+    _save_master(data)
+    return data
+
+
+def _save_master(data):
+    with _lock:
+        with open(MASTER_FILE, "w") as f:
+            json.dump(data, f, indent=2)
+
+
+def propagate_result(match_name, match_datetime, actual):
+    """Apply a result to every World Cup template league."""
+    index = load_index()
+    synced = 0
+    for code in index:
+        league_data = load_league(code)
+        if league_data is None:
+            continue
+        if league_data["meta"].get("template") != "worldcup":
+            continue
+        match = next(
+            (m for m in league_data["matches"]
+             if m["name"] == match_name and m["datetime"] == match_datetime),
+            None,
+        )
+        if match is None:
+            continue
+        apply_result(league_data, match, actual)
+        save_league(code, league_data)
+        synced += 1
+    return synced
+
+
+def wc_league_count():
+    index = load_index()
+    count = 0
+    for code, info in index.items():
+        data = load_league(code)
+        if data and data["meta"].get("template") == "worldcup":
+            count += 1
+    return count
+
+
+@app.route("/worldcup/admin", methods=["GET", "POST"])
+def master_login():
+    if session.get("master_admin"):
+        return redirect(url_for("master_dashboard"))
+    if request.method == "POST":
+        if request.form.get("password") == MASTER_PASSWORD:
+            session["master_admin"] = True
+            return redirect(url_for("master_dashboard"))
+        flash("Wrong password.", "error")
+    return render_template("master_login.html")
+
+
+@app.route("/worldcup/admin/dashboard")
+def master_dashboard():
+    if not session.get("master_admin"):
+        return redirect(url_for("master_login"))
+    data = load_master()
+    completed = [m for m in data["matches"] if m.get("result")]
+    upcoming  = [m for m in data["matches"] if not m.get("result")]
+    return render_template("master_dashboard.html",
+                           completed=completed, upcoming=upcoming,
+                           fmt_dt=fmt_dt, league_count=wc_league_count())
+
+
+@app.route("/worldcup/admin/result", methods=["POST"])
+def master_result():
+    if not session.get("master_admin"):
+        return redirect(url_for("master_login"))
+    data     = load_master()
+    match_id = request.form.get("match_id")
+    actual   = request.form.get("actual", "").strip()
+    match    = next((m for m in data["matches"] if m["id"] == match_id), None)
+    if not match:
+        flash("Match not found.", "error")
+        return redirect(url_for("master_dashboard"))
+    if not actual:
+        flash("Enter the actual score.", "error")
+        return redirect(url_for("master_dashboard"))
+    try:
+        parse_score(actual)
+    except ValueError:
+        flash("Invalid score — use 2-1 format.", "error")
+        return redirect(url_for("master_dashboard"))
+    match["result"] = actual
+    _save_master(data)
+    synced = propagate_result(match["name"], match["datetime"], actual)
+    flash(f"{match['name']} → {actual} · synced to {synced} league(s).", "success")
+    return redirect(url_for("master_dashboard"))
+
+
+@app.route("/worldcup/admin/logout")
+def master_logout():
+    session.pop("master_admin", None)
+    return redirect(url_for("lobby"))
 
 
 if __name__ == "__main__":

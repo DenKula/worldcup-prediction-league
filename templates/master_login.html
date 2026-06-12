@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}World Cup Master Admin{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:380px;margin:60px auto">
+  <div class="card-hd">⚽ World Cup Master Admin</div>
+  <div class="card-body">
+    <p style="font-size:.85rem;color:#666;margin-bottom:16px">
+      Record official match results here — they sync automatically to all World Cup leagues.
+    </p>
+    <form method="post">
+      <div class="form-row">
+        <label for="pw">Master password</label>
+        <input type="password" name="password" id="pw" autofocus placeholder="Enter master password">
+      </div>
+      <button type="submit" class="btn btn-green" style="width:100%;margin-top:6px">Login</button>
+    </form>
+    <div style="margin-top:14px;text-align:center">
+      <a href="{{ url_for('lobby') }}" style="font-size:.82rem;color:#888">← Back to lobby</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
