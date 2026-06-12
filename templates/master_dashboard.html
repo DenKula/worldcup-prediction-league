@@ -83,4 +83,34 @@
 </div>
 {% endif %}
 
+<!-- All leagues -->
+<div class="card">
+  <div class="card-hd">🏟 All Leagues ({{ leagues|length }})</div>
+  {% if leagues %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Code</th><th>Type</th><th>Players</th><th>Matches</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for code, info in leagues.items() %}
+      <tr>
+        <td><b>{{ info.name }}</b></td>
+        <td><span style="font-family:monospace;font-size:.85rem;background:#f5f5f5;
+                         border-radius:3px;padding:1px 6px">{{ code }}</span></td>
+        <td>{{ '🌍 Public' if info.is_public else '🔒 Private' }}</td>
+        <td class="c">{{ info.player_count }}</td>
+        <td class="c">{{ info.match_count }}</td>
+        <td style="white-space:nowrap">
+          <a href="{{ url_for('league_admin_dashboard', code=code) }}" class="btn btn-blue btn-sm">Manage</a>
+          <a href="{{ url_for('league_index', code=code) }}" class="btn btn-gray btn-sm" style="margin-left:4px">View</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="card-body" style="color:#888;text-align:center;padding:20px">No leagues created yet.</div>
+  {% endif %}
+</div>
+
 {% endblock %}

@@ -215,7 +215,7 @@ def _merge_ics_matches(data, new_matches):
 def league_admin_required(f):
     @wraps(f)
     def decorated(code, *args, **kwargs):
-        if not session.get(f"admin_{code}"):
+        if not session.get(f"admin_{code}") and not session.get("master_admin"):
             return redirect(url_for("league_admin_login", code=code))
         return f(code, *args, **kwargs)
     return decorated
@@ -617,6 +617,17 @@ def league_admin_settings(code):
     return redirect(url_for("league_admin_dashboard", code=code))
 
 
+@app.route("/league/<code>/admin/visibility", methods=["POST"])
+@league_admin_required
+def league_admin_visibility(code):
+    data = load_league(code)
+    data["meta"]["is_public"] = not data["meta"].get("is_public", False)
+    save_league(code, data)
+    state = "public" if data["meta"]["is_public"] else "private"
+    flash(f"League is now {state}.", "success")
+    return redirect(url_for("league_admin_dashboard", code=code))
+
+
 @app.route("/league/<code>/admin/logout")
 def league_admin_logout(code):
     session.pop(f"admin_{code}", None)
@@ -701,9 +712,14 @@ def master_dashboard():
     data = load_master()
     completed = [m for m in data["matches"] if m.get("result")]
     upcoming  = [m for m in data["matches"] if not m.get("result")]
+    index = load_index()
+    leagues = {code: info for code, info in sorted(
+        index.items(), key=lambda x: x[1].get("created_at", ""), reverse=True
+    )}
     return render_template("master_dashboard.html",
                            completed=completed, upcoming=upcoming,
-                           fmt_dt=fmt_dt, league_count=wc_league_count())
+                           fmt_dt=fmt_dt, league_count=wc_league_count(),
+                           leagues=leagues)
 
 
 @app.route("/worldcup/admin/result", methods=["POST"])
