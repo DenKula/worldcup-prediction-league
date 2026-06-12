@@ -50,7 +50,7 @@
     <div style="display:flex;gap:6px;align-items:center">
       <span class="badge badge-pub">Public</span>
       {% if info.has_join_password %}<span class="badge badge-lock">🔒 Password</span>{% endif %}
-      <a href="{{ url_for('league_index', code=code) }}"
+      <a href="{{ url_for('league_welcome', code=code) }}"
          class="btn btn-green btn-sm" style="margin-left:auto">Join →</a>
     </div>
   </div>

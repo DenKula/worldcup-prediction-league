@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Join {{ league_name }}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:420px;margin:60px auto">
+  <div class="card-hd">⚽ Welcome to {{ league_name }}</div>
+  <div class="card-body">
+    <p style="font-size:.88rem;color:#555;margin-bottom:20px">
+      Enter your name to join the league. If you've played before, use the same name to continue.
+    </p>
+    <form method="post">
+      <div class="form-row">
+        <label for="name">Your name</label>
+        <input type="text" name="name" id="name" autofocus
+               placeholder="e.g. Deniz" autocomplete="nickname">
+      </div>
+      <button type="submit" class="btn btn-green" style="width:100%;margin-top:6px;font-size:1rem;padding:10px">
+        Join League →
+      </button>
+    </form>
+    <div style="margin-top:14px;text-align:center">
+      <a href="{{ url_for('league_index', code=code) }}" style="font-size:.82rem;color:#888">
+        Just browse the scoreboard →
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

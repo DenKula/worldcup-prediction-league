@@ -1,0 +1,962 @@
+{
+  "meta": {
+    "name": "Testing",
+    "is_public": true,
+    "join_password_hash": null,
+    "admin_password_hash": "scrypt:32768:8:1$6IldGkjD4Lu3ZsmE$95806296845ee417300e8158add3c656c1de660b5b1026ff6548e257bc64119705c663c92e30e175b68fa9f257936ed0fd639dd2132d6e9172adc7d9ba3859c6",
+    "created_at": "2026-06-12T21:54:27.773725+00:00",
+    "template": "worldcup"
+  },
+  "players": {
+    "me": {
+      "outcome_correct": 0,
+      "score_correct": 0
+    },
+    "de": {
+      "outcome_correct": 0,
+      "score_correct": 0
+    }
+  },
+  "settings": {
+    "outcome_points": 1,
+    "score_points": 3
+  },
+  "matches": [
+    {
+      "id": "971d403f-9ded-4ac4-802a-d279a10195fe",
+      "name": "\ud83c\uddf2\ud83c\uddfd Mexico - \ud83c\uddff\ud83c\udde6 South Africa",
+      "datetime": "2026-06-11T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": "2-0",
+      "predictions": {}
+    },
+    {
+      "id": "9bba4363-ca75-447e-95c9-67979361ba76",
+      "name": "\ud83c\uddf0\ud83c\uddf7 South Korea - \ud83c\udde8\ud83c\uddff Czechia",
+      "datetime": "2026-06-12T02:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": "2-1",
+      "predictions": {}
+    },
+    {
+      "id": "d56726b7-7a2d-4e8b-8ddf-63fcf4fe47b6",
+      "name": "\ud83c\udde8\ud83c\udde6 Canada - \ud83c\udde7\ud83c\udde6 Bosnia and Herzegovina",
+      "datetime": "2026-06-12T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "b615ac1a-9060-4f8e-bd7e-4c0185770e20",
+      "name": "\ud83c\uddfa\ud83c\uddf8 USA - \ud83c\uddf5\ud83c\uddfe Paraguay",
+      "datetime": "2026-06-13T01:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "3fc47f85-6811-4580-a6d3-5135b3442b95",
+      "name": "\ud83c\uddf6\ud83c\udde6 Qatar - \ud83c\udde8\ud83c\udded Switzerland",
+      "datetime": "2026-06-13T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "df716f37-2385-4c09-9610-40b3b1ea05ad",
+      "name": "\ud83c\udde7\ud83c\uddf7 Brazil - \ud83c\uddf2\ud83c\udde6 Morocco",
+      "datetime": "2026-06-13T22:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "0a15222d-0fc0-4e3f-a5ea-955688571419",
+      "name": "\ud83c\udded\ud83c\uddf9 Haiti - \ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f Scotland",
+      "datetime": "2026-06-14T01:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "b76c75ec-cfbe-46ed-9aea-ea16e5db7ba0",
+      "name": "\ud83c\udde6\ud83c\uddfa Australia - \ud83c\uddf9\ud83c\uddf7 Turkiye",
+      "datetime": "2026-06-14T04:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "24f71d4f-0846-4325-90d9-437c7a6b3e5b",
+      "name": "\ud83c\udde9\ud83c\uddea Germany - \ud83c\udde8\ud83c\uddfc Curacao",
+      "datetime": "2026-06-14T17:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "15f12237-76c4-4eaa-9192-0baa7f7bec36",
+      "name": "\ud83c\uddf3\ud83c\uddf1 Netherlands - \ud83c\uddef\ud83c\uddf5 Japan",
+      "datetime": "2026-06-14T20:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "1f33f8da-f50a-4bf5-981a-503d3e12ed57",
+      "name": "\ud83c\udde8\ud83c\uddee Ivory Coast - \ud83c\uddea\ud83c\udde8 Ecuador",
+      "datetime": "2026-06-14T23:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "0327b463-9406-4f97-b20c-63c731dd93f8",
+      "name": "\ud83c\uddf8\ud83c\uddea Sweden - \ud83c\uddf9\ud83c\uddf3 Tunisia",
+      "datetime": "2026-06-15T02:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "54f8b1c6-b510-4c35-92d8-145f9acf539b",
+      "name": "\ud83c\uddea\ud83c\uddf8 Spain - \ud83c\udde8\ud83c\uddfb Cape Verde",
+      "datetime": "2026-06-15T16:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "893bd4f6-d4ee-4054-9869-8602daf13341",
+      "name": "\ud83c\udde7\ud83c\uddea Belgium - \ud83c\uddea\ud83c\uddec Egypt",
+      "datetime": "2026-06-15T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "e3522ff3-031b-4e41-9baf-fe8721b50e58",
+      "name": "\ud83c\uddf8\ud83c\udde6 Saudi Arabia - \ud83c\uddfa\ud83c\uddfe Uruguay",
+      "datetime": "2026-06-15T22:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "fb72b08c-8ec0-4dd0-8f3c-e0b9d79acb53",
+      "name": "\ud83c\uddee\ud83c\uddf7 Iran - \ud83c\uddf3\ud83c\uddff New Zealand",
+      "datetime": "2026-06-16T01:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "c1cca0a9-78ae-475e-a2cc-2cd13548a16c",
+      "name": "\ud83c\uddeb\ud83c\uddf7 France - \ud83c\uddf8\ud83c\uddf3 Senegal",
+      "datetime": "2026-06-16T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "2d0cb257-5476-4a86-b598-ab331f9cb3ad",
+      "name": "\ud83c\uddee\ud83c\uddf6 Iraq - \ud83c\uddf3\ud83c\uddf4 Norway",
+      "datetime": "2026-06-16T22:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "bd90b7bf-ff63-4eba-a5dd-593141bddbc5",
+      "name": "\ud83c\udde6\ud83c\uddf7 Argentina - \ud83c\udde9\ud83c\uddff Algeria",
+      "datetime": "2026-06-17T01:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "04e5e55d-fb0a-468e-9327-d182af562307",
+      "name": "\ud83c\udde6\ud83c\uddf9 Austria - \ud83c\uddef\ud83c\uddf4 Jordan",
+      "datetime": "2026-06-17T04:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "11a83093-df39-43f2-b0f2-ed17d7a5e8df",
+      "name": "\ud83c\uddf5\ud83c\uddf9 Portugal - DR Congo",
+      "datetime": "2026-06-17T17:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "bfaada5b-b00d-4f17-930c-7e8810544da9",
+      "name": "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f England - \ud83c\udded\ud83c\uddf7 Croatia",
+      "datetime": "2026-06-17T20:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "d28f06c7-2615-403c-986f-66245bdb7101",
+      "name": "\ud83c\uddec\ud83c\udded Ghana - \ud83c\uddf5\ud83c\udde6 Panama",
+      "datetime": "2026-06-17T23:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "2c4ebcfe-5709-44ef-8189-7377d8c690cc",
+      "name": "\ud83c\uddfa\ud83c\uddff Uzbekistan - \ud83c\udde8\ud83c\uddf4 Colombia",
+      "datetime": "2026-06-18T02:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "7ebb550f-0916-4540-a729-58a2aa4b3121",
+      "name": "\ud83c\udde8\ud83c\uddff Czechia - \ud83c\uddff\ud83c\udde6 South Africa",
+      "datetime": "2026-06-18T16:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "4968e44b-8007-45e6-9d27-1c5c71557878",
+      "name": "\ud83c\udde8\ud83c\udded Switzerland - \ud83c\udde7\ud83c\udde6 Bosnia and Herzegovina",
+      "datetime": "2026-06-18T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "e6b1484a-f105-406b-8372-8445e6da5e73",
+      "name": "\ud83c\udde8\ud83c\udde6 Canada - \ud83c\uddf6\ud83c\udde6 Qatar",
+      "datetime": "2026-06-18T22:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "40785fdb-5a8b-43d8-946a-1668d52a93a3",
+      "name": "\ud83c\uddf2\ud83c\uddfd Mexico - \ud83c\uddf0\ud83c\uddf7 South Korea",
+      "datetime": "2026-06-19T01:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "befc4a10-9e37-4a14-a5c4-6f2ca947a2d8",
+      "name": "\ud83c\uddfa\ud83c\uddf8 USA - \ud83c\udde6\ud83c\uddfa Australia",
+      "datetime": "2026-06-19T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "1a4da9d0-2d08-476e-b1d3-089cb7fbc67f",
+      "name": "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f Scotland - \ud83c\uddf2\ud83c\udde6 Morocco",
+      "datetime": "2026-06-19T22:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "bbf464ca-bd76-4e58-867b-1fe80cd307a5",
+      "name": "\ud83c\udde7\ud83c\uddf7 Brazil - \ud83c\udded\ud83c\uddf9 Haiti",
+      "datetime": "2026-06-20T00:30:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "a2351f75-6cb8-4b81-822b-8b3d0452e494",
+      "name": "\ud83c\uddf9\ud83c\uddf7 Turkiye - \ud83c\uddf5\ud83c\uddfe Paraguay",
+      "datetime": "2026-06-20T03:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "bb49af0a-e67e-4314-a47f-641cb002499e",
+      "name": "\ud83c\uddf3\ud83c\uddf1 Netherlands - \ud83c\uddf8\ud83c\uddea Sweden",
+      "datetime": "2026-06-20T17:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "1681e823-df5d-4ce4-9ec7-c98504f59e71",
+      "name": "\ud83c\udde9\ud83c\uddea Germany - \ud83c\udde8\ud83c\uddee Ivory Coast",
+      "datetime": "2026-06-20T20:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "3a043dc1-3f2c-429e-b3d3-1831d8524b10",
+      "name": "\ud83c\uddea\ud83c\udde8 Ecuador - \ud83c\udde8\ud83c\uddfc Curacao",
+      "datetime": "2026-06-21T00:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "bb09c02a-6d54-4368-9127-44b42b11d86c",
+      "name": "\ud83c\uddf9\ud83c\uddf3 Tunisia - \ud83c\uddef\ud83c\uddf5 Japan",
+      "datetime": "2026-06-21T04:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "7e2cc0a2-07ba-4c48-a861-d1b8b16edee3",
+      "name": "\ud83c\uddea\ud83c\uddf8 Spain - \ud83c\uddf8\ud83c\udde6 Saudi Arabia",
+      "datetime": "2026-06-21T16:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "be0587b2-97c8-4936-9c4c-a814b284a8cc",
+      "name": "\ud83c\udde7\ud83c\uddea Belgium - \ud83c\uddee\ud83c\uddf7 Iran",
+      "datetime": "2026-06-21T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "8e66177a-da2e-475f-a3d6-a11498a2a25e",
+      "name": "\ud83c\uddfa\ud83c\uddfe Uruguay - \ud83c\udde8\ud83c\uddfb Cape Verde",
+      "datetime": "2026-06-21T22:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "53d46c5a-3f8c-459c-bc44-794550eb2b21",
+      "name": "\ud83c\uddf3\ud83c\uddff New Zealand - \ud83c\uddea\ud83c\uddec Egypt",
+      "datetime": "2026-06-22T01:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "f2cdfead-ef0f-4d18-8b59-44448cf02f77",
+      "name": "\ud83c\udde6\ud83c\uddf7 Argentina - \ud83c\udde6\ud83c\uddf9 Austria",
+      "datetime": "2026-06-22T17:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "5fef53ed-4693-4a52-867b-e2104db74816",
+      "name": "\ud83c\uddeb\ud83c\uddf7 France - \ud83c\uddee\ud83c\uddf6 Iraq",
+      "datetime": "2026-06-22T21:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "488b828a-90d3-4847-bdf7-aeeec5c504f8",
+      "name": "\ud83c\uddf3\ud83c\uddf4 Norway - \ud83c\uddf8\ud83c\uddf3 Senegal",
+      "datetime": "2026-06-23T00:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "2a3f57ed-47c8-4bdc-851b-de588f1d23d2",
+      "name": "\ud83c\uddef\ud83c\uddf4 Jordan - \ud83c\udde9\ud83c\uddff Algeria",
+      "datetime": "2026-06-23T03:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "b327ea7f-a459-4172-9a0e-1002b55279bb",
+      "name": "\ud83c\uddf5\ud83c\uddf9 Portugal - \ud83c\uddfa\ud83c\uddff Uzbekistan",
+      "datetime": "2026-06-23T17:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "544d031f-f46a-4335-ba5d-57367582bab6",
+      "name": "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f England - \ud83c\uddec\ud83c\udded Ghana",
+      "datetime": "2026-06-23T20:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "a4d305b9-1783-443d-be24-ced69b26a77b",
+      "name": "\ud83c\uddf5\ud83c\udde6 Panama - \ud83c\udded\ud83c\uddf7 Croatia",
+      "datetime": "2026-06-23T23:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "c3f91181-8d3a-4471-b60f-360aed5f7644",
+      "name": "\ud83c\udde8\ud83c\uddf4 Colombia - DR Congo",
+      "datetime": "2026-06-24T02:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "4140778a-6b95-438e-a197-112b24add261",
+      "name": "\ud83c\udde7\ud83c\udde6 Bosnia and Herzegovina - \ud83c\uddf6\ud83c\udde6 Qatar",
+      "datetime": "2026-06-24T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "95ea649e-3325-4d71-bbd8-5fc3f7bd263a",
+      "name": "\ud83c\udde8\ud83c\udded Switzerland - \ud83c\udde8\ud83c\udde6 Canada",
+      "datetime": "2026-06-24T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "506fdcb2-7ae6-45ae-8952-9147df806277",
+      "name": "\ud83c\uddf2\ud83c\udde6 Morocco - \ud83c\udded\ud83c\uddf9 Haiti",
+      "datetime": "2026-06-24T22:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "1049b150-ced0-40e1-b921-5fa2f2c83c81",
+      "name": "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f Scotland - \ud83c\udde7\ud83c\uddf7 Brazil",
+      "datetime": "2026-06-24T22:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "b8c8bae1-5900-4093-93c8-fb23639ae16a",
+      "name": "\ud83c\udde8\ud83c\uddff Czechia - \ud83c\uddf2\ud83c\uddfd Mexico",
+      "datetime": "2026-06-25T01:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "a1e6f27e-fff6-4962-abad-99f8eef9bb35",
+      "name": "\ud83c\uddff\ud83c\udde6 South Africa - \ud83c\uddf0\ud83c\uddf7 South Korea",
+      "datetime": "2026-06-25T01:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "959c37ee-0f07-4007-bdc8-96fa3c93390c",
+      "name": "\ud83c\udde8\ud83c\uddfc Curacao - \ud83c\udde8\ud83c\uddee Ivory Coast",
+      "datetime": "2026-06-25T20:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "ca4e91ce-3980-4f11-b148-42f9da7dd38b",
+      "name": "\ud83c\uddea\ud83c\udde8 Ecuador - \ud83c\udde9\ud83c\uddea Germany",
+      "datetime": "2026-06-25T20:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "39a9d368-2113-415f-828a-05e6e39f5a15",
+      "name": "\ud83c\uddef\ud83c\uddf5 Japan - \ud83c\uddf8\ud83c\uddea Sweden",
+      "datetime": "2026-06-25T23:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "f309a502-9817-43df-bcfd-dc6a741de808",
+      "name": "\ud83c\uddf9\ud83c\uddf3 Tunisia - \ud83c\uddf3\ud83c\uddf1 Netherlands",
+      "datetime": "2026-06-25T23:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "6bf4ad93-f548-4cdf-abd1-7e9dfdbf1180",
+      "name": "\ud83c\uddf5\ud83c\uddfe Paraguay - \ud83c\udde6\ud83c\uddfa Australia",
+      "datetime": "2026-06-26T02:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "b8cf1f14-c77b-4009-9013-7eb97015f388",
+      "name": "\ud83c\uddf9\ud83c\uddf7 Turkiye - \ud83c\uddfa\ud83c\uddf8 USA",
+      "datetime": "2026-06-26T02:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "0af29cd2-9a77-42d0-9069-56d69e2547a6",
+      "name": "\ud83c\uddf3\ud83c\uddf4 Norway - \ud83c\uddeb\ud83c\uddf7 France",
+      "datetime": "2026-06-26T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "a481d7b6-7562-406e-87de-b0af2dc0e12b",
+      "name": "\ud83c\uddf8\ud83c\uddf3 Senegal - \ud83c\uddee\ud83c\uddf6 Iraq",
+      "datetime": "2026-06-26T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "2e32f714-9fb0-4ec1-8ac9-4d92ef008693",
+      "name": "\ud83c\udde8\ud83c\uddfb Cape Verde - \ud83c\uddf8\ud83c\udde6 Saudi Arabia",
+      "datetime": "2026-06-27T00:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "2fe6ff02-0407-4cf7-9456-20d0683ced46",
+      "name": "\ud83c\uddfa\ud83c\uddfe Uruguay - \ud83c\uddea\ud83c\uddf8 Spain",
+      "datetime": "2026-06-27T00:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "7e0253ec-b615-4257-aa65-bb7bf400e38e",
+      "name": "\ud83c\uddea\ud83c\uddec Egypt - \ud83c\uddee\ud83c\uddf7 Iran",
+      "datetime": "2026-06-27T03:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "79e7133b-5c3b-4b0f-8ca1-63520e17c146",
+      "name": "\ud83c\uddf3\ud83c\uddff New Zealand - \ud83c\udde7\ud83c\uddea Belgium",
+      "datetime": "2026-06-27T03:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "15a0af82-daf6-4cb8-b700-0041fe2789f4",
+      "name": "\ud83c\udded\ud83c\uddf7 Croatia - \ud83c\uddec\ud83c\udded Ghana",
+      "datetime": "2026-06-27T21:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "b8d2ff7f-d038-47f4-9514-e9644f5bbffd",
+      "name": "\ud83c\uddf5\ud83c\udde6 Panama - \ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f England",
+      "datetime": "2026-06-27T21:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "154ee1a5-17f9-44e4-b911-4bf3ce3c44ba",
+      "name": "\ud83c\udde8\ud83c\uddf4 Colombia - \ud83c\uddf5\ud83c\uddf9 Portugal",
+      "datetime": "2026-06-27T23:30:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "896e17ff-ab1e-4a1a-a3c3-bc98c3b69550",
+      "name": "DR Congo - \ud83c\uddfa\ud83c\uddff Uzbekistan",
+      "datetime": "2026-06-27T23:30:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "15e65d3c-e2cb-476a-85c9-5cf88078d579",
+      "name": "\ud83c\udde9\ud83c\uddff Algeria - \ud83c\udde6\ud83c\uddf9 Austria",
+      "datetime": "2026-06-28T02:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "6ae20619-3262-44a3-835c-8bc8fe2c1e6a",
+      "name": "\ud83c\uddef\ud83c\uddf4 Jordan - \ud83c\udde6\ud83c\uddf7 Argentina",
+      "datetime": "2026-06-28T02:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "8747b407-05f7-4f78-960f-03dd727b427c",
+      "name": "\u26bd\ufe0f 2A - 2B",
+      "datetime": "2026-06-28T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "4227c921-4620-45ae-a666-9f601b5ccb44",
+      "name": "\u26bd\ufe0f 1C - 2F",
+      "datetime": "2026-06-29T17:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "f4982a17-fd2c-4214-a0fa-bf6351c74fd1",
+      "name": "\u26bd\ufe0f 1E - 3ABCDF",
+      "datetime": "2026-06-29T20:30:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "02ef3597-6057-4df7-ad21-e38555aa2289",
+      "name": "\u26bd\ufe0f 1F - 2C",
+      "datetime": "2026-06-30T01:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "c337ecc9-57c7-4c00-aaab-4914044e69dc",
+      "name": "\u26bd\ufe0f 2E - 2I",
+      "datetime": "2026-06-30T17:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "33d701ea-2e0c-43eb-8a9b-ffa9c7f23a54",
+      "name": "\u26bd\ufe0f 1I - 3CDFGH",
+      "datetime": "2026-06-30T21:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "ff0dd1f9-ad2c-43ce-ac14-8cd50c53a087",
+      "name": "\u26bd\ufe0f 1A - 3CEFHI",
+      "datetime": "2026-07-01T01:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "60e88940-972f-4420-a21b-da8f2ab578fa",
+      "name": "\u26bd\ufe0f 1L - 3EHIJK",
+      "datetime": "2026-07-01T16:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "77fb3030-ad44-4256-88a4-66f6c9874100",
+      "name": "\u26bd\ufe0f 1G - 3AEHIJ",
+      "datetime": "2026-07-01T20:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "62203bae-07db-4e24-b766-5d5e1a364d5f",
+      "name": "\u26bd\ufe0f 1D - 3BEFIJ",
+      "datetime": "2026-07-02T00:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "ff27c805-fd4d-45da-9ba8-29919e571fe3",
+      "name": "\u26bd\ufe0f 1H - 2J",
+      "datetime": "2026-07-02T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "9f4818dd-2fd6-4754-af3f-ad84310723df",
+      "name": "\u26bd\ufe0f 2K - 2L",
+      "datetime": "2026-07-02T23:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "40e86df1-95ac-4d64-91c2-478812f734a3",
+      "name": "\u26bd\ufe0f 1B - 3EFGIJ",
+      "datetime": "2026-07-03T03:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "80304221-b342-4aa3-9e19-eddf6a790624",
+      "name": "\u26bd\ufe0f 2D - 2G",
+      "datetime": "2026-07-03T18:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "a4b71431-690c-4630-b48e-1541c2265fdd",
+      "name": "\u26bd\ufe0f 1J - 2H",
+      "datetime": "2026-07-03T22:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "2c8148ec-d655-48e6-82e2-0fa0dafa2a4f",
+      "name": "\u26bd\ufe0f 1K - 3DEIJL",
+      "datetime": "2026-07-04T01:30:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "4b4712af-68c2-41b1-abf6-682fad3627e2",
+      "name": "\u26bd\ufe0f 2A/2B - 1F/2C",
+      "datetime": "2026-07-04T17:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "2b749e20-9a37-49c5-8205-fc45cdcbef2a",
+      "name": "\u26bd\ufe0f 1E/3ABCDF - 1I/3CDFGH",
+      "datetime": "2026-07-04T21:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "eefe6477-a7de-423c-b158-a2c74985a1fc",
+      "name": "\u26bd\ufe0f 1C/2F - 2E/2I",
+      "datetime": "2026-07-05T20:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "33dd111c-d516-479a-b3cd-aba74f3be691",
+      "name": "\u26bd\ufe0f 1A/3CEFHI - 1L/3EHIJK",
+      "datetime": "2026-07-06T00:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "f7252abb-2e84-4cd7-9922-b92f8903388b",
+      "name": "\u26bd\ufe0f 2K/2L - 1H/2J",
+      "datetime": "2026-07-06T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "8bd869f4-5906-41c4-8a51-b3b7b8bca1db",
+      "name": "\u26bd\ufe0f 1D/3BEFIJ - 1G/3AEHIJ",
+      "datetime": "2026-07-07T00:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "290b4bbd-ab07-4abc-81dd-b509f50c7bc5",
+      "name": "\u26bd\ufe0f 1J/2H - 2D/2G",
+      "datetime": "2026-07-07T16:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "004a0d5b-bad1-41c1-97b7-169c961896cf",
+      "name": "\u26bd\ufe0f 1B/3EFGIJ - 1K/3DEIJL",
+      "datetime": "2026-07-07T20:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "1aa9e7f8-52cb-4a02-a3e1-b5a07c31df8e",
+      "name": "\u26bd\ufe0f Winner EF 1 - Winner EF 2",
+      "datetime": "2026-07-09T20:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "34c0adb3-5d5d-4caf-84d1-9c16604f00bb",
+      "name": "\u26bd\ufe0f Winner EF 5 - Winner EF 6",
+      "datetime": "2026-07-10T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "561c4995-2931-42ce-91cf-410b8f371623",
+      "name": "\u26bd\ufe0f Winner EF 3 - Winner EF 4",
+      "datetime": "2026-07-11T21:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "6ce05a0d-2fa4-438c-9252-f43aa05e1787",
+      "name": "\u26bd\ufe0f Winner EF 7 - Winner EF 8",
+      "datetime": "2026-07-12T01:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "ee21ff0c-8be8-460b-ab5e-5adfa53f3f11",
+      "name": "\u26bd\ufe0f Winner QF 1 - Winner QF 2",
+      "datetime": "2026-07-14T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "4ca51265-ccdc-4ef0-9fbf-b5f48a1ccbed",
+      "name": "\u26bd\ufe0f Winner QF 3 - Winner QF 4",
+      "datetime": "2026-07-15T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "c45bb0bc-b0fd-429c-8e31-6979692cb03a",
+      "name": "\u26bd\ufe0f Loser SF 1 - Loser SF 2",
+      "datetime": "2026-07-18T21:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    },
+    {
+      "id": "7c17d666-daab-49d4-be19-7c4713e2daae",
+      "name": "\u26bd\ufe0f Winner SF 1 - Winner SF 2",
+      "datetime": "2026-07-19T19:00:00+00:00",
+      "venue": "",
+      "round": "",
+      "result": null,
+      "predictions": {}
+    }
+  ]
+}

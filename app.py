@@ -306,7 +306,7 @@ def find_league():
     if load_league(code) is None:
         flash(f"No league found with code '{code}'.", "error")
         return redirect(url_for("lobby"))
-    return redirect(url_for("league_index", code=code))
+    return redirect(url_for("league_welcome", code=code))
 
 
 # ── Join (password gate) ──────────────────────────────────────────────────────
@@ -317,16 +317,41 @@ def league_join(code):
     if data is None:
         abort(404)
     if not data["meta"].get("join_password_hash"):
-        return redirect(url_for("league_index", code=code))
+        return redirect(url_for("league_welcome", code=code))
     if session.get(f"member_{code}"):
-        return redirect(url_for("league_index", code=code))
+        return redirect(url_for("league_welcome", code=code))
     if request.method == "POST":
         pw = request.form.get("password", "")
         if check_password_hash(data["meta"]["join_password_hash"], pw):
             session[f"member_{code}"] = True
-            return redirect(url_for("league_index", code=code))
+            return redirect(url_for("league_welcome", code=code))
         flash("Wrong password.", "error")
     return render_template("join.html", league_name=data["meta"]["name"], code=code)
+
+
+# ── Welcome / name entry ──────────────────────────────────────────────────────
+
+@app.route("/league/<code>/welcome", methods=["GET", "POST"])
+def league_welcome(code):
+    data = load_league(code)
+    if data is None:
+        abort(404)
+    if data["meta"].get("join_password_hash") and not session.get(f"member_{code}"):
+        return redirect(url_for("league_join", code=code))
+
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        if not name:
+            flash("Enter your name to continue.", "error")
+            return redirect(url_for("league_welcome", code=code))
+        if name not in data["players"]:
+            data["players"][name] = {"outcome_correct": 0, "score_correct": 0}
+            save_league(code, data)
+        session[f"player_{code}"] = name
+        flash(f"Welcome, {name}! 🎉", "success")
+        return redirect(url_for("league_index", code=code))
+
+    return render_template("welcome.html", code=code, league_name=data["meta"]["name"])
 
 
 # ── Scoreboard ────────────────────────────────────────────────────────────────
@@ -380,11 +405,11 @@ def league_predict(code):
             return redirect(url_for("league_predict", code=code))
 
         save_league(code, data)
-        session["player"] = player
+        session[f"player_{code}"] = player
         flash(f"Predictions saved for {player}!", "success")
         return redirect(url_for("league_predict", code=code) + f"?player={player}")
 
-    player   = request.args.get("player") or session.get("player", "")
+    player   = request.args.get("player") or session.get(f"player_{code}", "")
     upcoming = [m for m in data["matches"] if not m.get("result")]
     return render_template("predict.html",
                            code=code, league_name=data["meta"]["name"],
