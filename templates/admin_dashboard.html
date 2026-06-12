@@ -20,6 +20,10 @@
 .code-box{font-family:monospace;background:#f5f5f5;border:1px solid #ddd;border-radius:6px;
           padding:10px 16px;font-size:1.2rem;letter-spacing:4px;text-align:center;color:#1a6b3c;
           font-weight:800;margin:8px 0}
+.led{display:inline-block;width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-top:2px}
+.led-green{background:#2ecc71;box-shadow:0 0 7px 3px rgba(46,204,113,.55)}
+.led-red  {background:#e74c3c;box-shadow:0 0 7px 3px rgba(231,76,60,.45)}
+.sync-row{display:flex;align-items:flex-start;gap:9px;padding:10px 0;border-bottom:1px solid #f0f0f0;margin-bottom:12px}
 </style>
 {% endblock %}
 
@@ -126,6 +130,21 @@
     <div class="card">
       <div class="card-hd">Import Matches</div>
       <div class="card-body">
+        <div class="sync-row">
+          {% if data.meta.template == 'worldcup' %}
+            <span class="led led-green"></span>
+            <div>
+              <b style="font-size:.85rem">LiveSync active</b>
+              <p class="note">Match results sync automatically from the World Cup master calendar.</p>
+            </div>
+          {% else %}
+            <span class="led led-red"></span>
+            <div>
+              <b style="font-size:.85rem">LiveSync off</b>
+              <p class="note">This league uses a custom schedule — results must be entered manually.</p>
+            </div>
+          {% endif %}
+        </div>
         <form method="post" action="{{ url_for('league_admin_import_ics_file', code=code) }}" enctype="multipart/form-data">
           <div class="form-row">
             <label>Upload .ics file</label>
