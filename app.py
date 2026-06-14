@@ -581,8 +581,9 @@ def league_admin_edit_match(code, match_id):
 
     if request.method == "POST":
         if match.get("result"):
-            old_result  = match["result"]
-            old_outcome = get_outcome(old_result)
+            old_result   = match["result"]
+            old_outcome  = get_outcome(old_result)
+            old_diff_val = goal_diff(old_result)
             for player, pred in match.get("predictions", {}).items():
                 if player not in data["players"]: continue
                 try: parse_score(pred)
@@ -590,7 +591,11 @@ def league_admin_edit_match(code, match_id):
                 s = data["players"][player]
                 if pred == old_result:
                     s["outcome_correct"] = max(0, s["outcome_correct"] - 1)
+                    s["diff_correct"]    = max(0, s.get("diff_correct", 0) - 1)
                     s["score_correct"]   = max(0, s["score_correct"]   - 1)
+                elif goal_diff(pred) == old_diff_val:
+                    s["outcome_correct"] = max(0, s["outcome_correct"] - 1)
+                    s["diff_correct"]    = max(0, s.get("diff_correct", 0) - 1)
                 elif get_outcome(pred) == old_outcome:
                     s["outcome_correct"] = max(0, s["outcome_correct"] - 1)
 
@@ -610,12 +615,18 @@ def league_admin_edit_match(code, match_id):
         if match.get("result"):
             result         = match["result"]
             result_outcome = get_outcome(result)
+            result_diff    = goal_diff(result)
             for player, pred in new_preds.items():
                 if player not in data["players"]: continue
                 s = data["players"][player]
+                s.setdefault("diff_correct", 0)
                 if pred == result:
                     s["outcome_correct"] += 1
+                    s["diff_correct"]    += 1
                     s["score_correct"]   += 1
+                elif goal_diff(pred) == result_diff:
+                    s["outcome_correct"] += 1
+                    s["diff_correct"]    += 1
                 elif get_outcome(pred) == result_outcome:
                     s["outcome_correct"] += 1
 
@@ -641,6 +652,23 @@ def league_admin_settings(code):
         flash("Settings saved.", "success")
     except ValueError:
         flash("Invalid point values.", "error")
+    return redirect(url_for("league_admin_dashboard", code=code))
+
+
+@app.route("/league/<code>/admin/recalculate", methods=["POST"])
+@league_admin_required
+def league_admin_recalculate(code):
+    data = load_league(code)
+    for player in data["players"]:
+        data["players"][player]["outcome_correct"] = 0
+        data["players"][player]["diff_correct"]    = 0
+        data["players"][player]["score_correct"]   = 0
+    completed = [(m, m["result"]) for m in data["matches"] if m.get("result")]
+    for match, result in completed:
+        match["result"] = None  # so apply_result skips the undo block
+        apply_result(data, match, result)
+    save_league(code, data)
+    flash(f"Scores recalculated from {len(completed)} completed match(es).", "success")
     return redirect(url_for("league_admin_dashboard", code=code))
 
 

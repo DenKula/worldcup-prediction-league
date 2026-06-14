@@ -85,6 +85,12 @@
           <button type="submit" class="btn btn-green btn-sm">Add</button>
         </div>
       </form>
+      <hr style="border:none;border-top:1px solid #eee;margin:14px 0">
+      <form method="post" action="{{ url_for('league_admin_recalculate', code=code) }}"
+            onsubmit="return confirm('Recalculate all scores from scratch? This will recount every completed match.')">
+        <button type="submit" class="btn btn-gray btn-sm">↺ Recalculate Scores</button>
+      </form>
+      <p class="note" style="margin-top:6px">Resets and replays all completed match results. Use if the scoreboard looks wrong.</p>
     </div>
   </div>
 
