@@ -54,12 +54,13 @@
     <div class="card-body">
       {% if data.players %}
       <table style="margin-bottom:14px">
-        <thead><tr><th>Name</th><th>Outcomes</th><th>Exact</th><th></th></tr></thead>
+        <thead><tr><th>Name</th><th>Outcomes</th><th>Diffs</th><th>Exact</th><th></th></tr></thead>
         <tbody>
           {% for name, stats in data.players.items()|sort %}
           <tr>
             <td><b>{{ name }}</b></td>
             <td class="c">{{ stats.outcome_correct }}</td>
+            <td class="c">{{ stats.get('diff_correct', 0) }}</td>
             <td class="c">{{ stats.score_correct }}</td>
             <td>
               <form method="post" action="{{ url_for('league_admin_remove_player', code=code) }}" style="margin:0"
@@ -116,6 +117,10 @@
             <div>
               <label>Correct outcome</label>
               <input type="text" name="outcome_points" value="{{ data.settings.outcome_points }}" style="width:70px">
+            </div>
+            <div>
+              <label>Correct difference</label>
+              <input type="text" name="diff_points" value="{{ data.settings.get('diff_points', 1) }}" style="width:70px">
             </div>
             <div>
               <label>Exact score bonus</label>

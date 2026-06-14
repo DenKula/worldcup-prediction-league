@@ -76,7 +76,7 @@ def load_league(code):
         d = json.load(f)
     d.setdefault("meta", {})
     d.setdefault("players", {})
-    d.setdefault("settings", {"outcome_points": 1, "score_points": 3})
+    d.setdefault("settings", {"outcome_points": 1, "diff_points": 1, "score_points": 3})
     d.setdefault("matches", [])
     return d
 
@@ -115,42 +115,67 @@ def get_outcome(s):
     return "draw"
 
 
+def goal_diff(s):
+    a, b = parse_score(s)
+    return a - b  # signed: positive=home win, negative=away win, 0=draw
+
+
 def ranked_players(data):
     op = data["settings"]["outcome_points"]
+    dp = data["settings"].get("diff_points", 1)
     sp = data["settings"]["score_points"]
     return sorted(
         data["players"].items(),
-        key=lambda x: x[1]["outcome_correct"] * op + x[1]["score_correct"] * sp,
+        key=lambda x: (
+            x[1]["outcome_correct"] * op +
+            x[1].get("diff_correct", 0) * dp +
+            x[1]["score_correct"] * sp
+        ),
         reverse=True,
-    ), op, sp
+    ), op, dp, sp
 
 
 def apply_result(data, match, actual):
-    op = data["settings"]["outcome_points"]
-    sp = data["settings"]["score_points"]
+    dp = data["settings"].get("diff_points", 1)
+
+    # Undo previous result
     if match.get("result") and match.get("predictions"):
-        old_out = get_outcome(match["result"])
+        old_diff = goal_diff(match["result"])
+        old_out  = get_outcome(match["result"])
         for player, pred in match["predictions"].items():
             if player not in data["players"]: continue
             try: parse_score(pred)
             except: continue
             s = data["players"][player]
             if pred == match["result"]:
-                s["outcome_correct"] = max(0, s["outcome_correct"] - 1)
-                s["score_correct"]   = max(0, s["score_correct"]   - 1)
+                s["outcome_correct"]          = max(0, s["outcome_correct"] - 1)
+                s["diff_correct"]             = max(0, s.get("diff_correct", 0) - 1)
+                s["score_correct"]            = max(0, s["score_correct"] - 1)
+            elif goal_diff(pred) == old_diff:
+                s["outcome_correct"]          = max(0, s["outcome_correct"] - 1)
+                s["diff_correct"]             = max(0, s.get("diff_correct", 0) - 1)
             elif get_outcome(pred) == old_out:
-                s["outcome_correct"] = max(0, s["outcome_correct"] - 1)
-    new_out = get_outcome(actual)
+                s["outcome_correct"]          = max(0, s["outcome_correct"] - 1)
+
+    # Apply new result
+    new_diff = goal_diff(actual)
+    new_out  = get_outcome(actual)
     for player, pred in match.get("predictions", {}).items():
         if player not in data["players"]: continue
         try: parse_score(pred)
         except: continue
         s = data["players"][player]
+        s.setdefault("diff_correct", 0)
         if pred == actual:
             s["outcome_correct"] += 1
+            s["diff_correct"]    += 1
             s["score_correct"]   += 1
+        elif goal_diff(pred) == new_diff:
+            s["outcome_correct"] += 1
+            s["diff_correct"]    += 1
         elif get_outcome(pred) == new_out:
             s["outcome_correct"] += 1
+
     match["result"] = actual
 
 
@@ -165,6 +190,7 @@ def fmt_dt(dt_str):
 def prediction_class(pred, result):
     try:
         if pred == result: return "exact"
+        if goal_diff(pred) == goal_diff(result): return "diff"
         if get_outcome(pred) == get_outcome(result): return "outcome"
         return "wrong"
     except Exception:
@@ -292,7 +318,7 @@ def create_league():
             "template": template,
         },
         "players": {},
-        "settings": {"outcome_points": 1, "score_points": 3},
+        "settings": {"outcome_points": 1, "diff_points": 1, "score_points": 3},
         "matches": matches,
     }
 
@@ -353,7 +379,7 @@ def league_welcome(code):
             flash("Enter your name to continue.", "error")
             return redirect(url_for("league_welcome", code=code))
         if name not in data["players"]:
-            data["players"][name] = {"outcome_correct": 0, "score_correct": 0}
+            data["players"][name] = {"outcome_correct": 0, "diff_correct": 0, "score_correct": 0}
             save_league(code, data)
         session[f"player_{code}"] = name
         flash(f"Welcome, {name}! 🎉", "success")
@@ -368,12 +394,12 @@ def league_welcome(code):
 @league_member_required
 def league_index(code):
     data = load_league(code)
-    ranked, op, sp = ranked_players(data)
+    ranked, op, dp, sp = ranked_players(data)
     completed = [m for m in data["matches"] if m.get("result")]
     upcoming  = [m for m in data["matches"] if not m.get("result")]
     return render_template("index.html",
                            code=code, league_name=data["meta"]["name"],
-                           ranked=ranked, op=op, sp=sp,
+                           ranked=ranked, op=op, dp=dp, sp=sp,
                            completed=completed, upcoming=upcoming)
 
 
@@ -489,7 +515,7 @@ def league_admin_add_player(code):
     elif name in data["players"]:
         flash(f"'{name}' already exists.", "error")
     else:
-        data["players"][name] = {"outcome_correct": 0, "score_correct": 0}
+        data["players"][name] = {"outcome_correct": 0, "diff_correct": 0, "score_correct": 0}
         save_league(code, data)
         flash(f"Added '{name}'.", "success")
     return redirect(url_for("league_admin_dashboard", code=code))
@@ -609,6 +635,7 @@ def league_admin_settings(code):
     data = load_league(code)
     try:
         data["settings"]["outcome_points"] = int(request.form.get("outcome_points", 1))
+        data["settings"]["diff_points"]    = int(request.form.get("diff_points", 1))
         data["settings"]["score_points"]   = int(request.form.get("score_points", 3))
         save_league(code, data)
         flash("Settings saved.", "success")
