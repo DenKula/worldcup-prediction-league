@@ -33,16 +33,15 @@ tr:hover td{background:#f9fdf9}
 .pts{font-weight:800;color:#1a6b3c}
 .rank-1 td{background:#fff9c4}.rank-2 td{background:#f8f8f8}.rank-3 td{background:#fde9c8}
 .rank-1:hover td,.rank-2:hover td,.rank-3:hover td{filter:brightness(.97)}
-span.outcome{display:inline-block;background:#BFDBFE;color:#1e40af;border-radius:4px;padding:2px 8px}
-span.diff   {display:inline-block;position:relative;background:#0D9488;color:white;
-             font-weight:700;border-radius:4px;padding:2px 8px}
-span.diff::before{content:'✓';position:absolute;top:-9px;left:-5px;font-size:14px;
-                  color:#fff;font-weight:900;text-shadow:0 1px 3px rgba(0,0,0,.5)}
-span.exact  {display:inline-block;position:relative;background:#F59E0B;color:white;
-             font-weight:700;border-radius:4px;padding:2px 8px}
-span.exact::before{content:'★';position:absolute;top:-11px;left:-6px;font-size:21px;
-                   color:white;text-shadow:0 1px 3px rgba(0,0,0,.4)}
-span.wrong  {display:inline-block;background:#E5E7EB;color:#6b7280;border-radius:4px;padding:2px 8px}
+span.outcome,span.diff,span.exact,span.wrong{
+  display:inline-flex;align-items:center;gap:4px;
+  border-radius:5px;padding:2px 9px;font-size:.82rem;font-weight:600;white-space:nowrap}
+span.exact  {background:#D97706;color:#fff;box-shadow:0 1px 4px rgba(180,83,9,.3)}
+span.exact::before{content:'★';font-size:11px;line-height:1}
+span.diff   {background:#0D9488;color:#fff;box-shadow:0 1px 4px rgba(13,148,136,.3)}
+span.diff::before{content:'✓';font-size:12px;font-weight:900;line-height:1}
+span.outcome{background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE}
+span.wrong  {background:#F3F4F6;color:#9CA3AF}
 .muted{color:#aaa}
 .btn{display:inline-block;padding:8px 18px;border-radius:5px;font-weight:700;
      font-size:.88rem;cursor:pointer;border:none;text-decoration:none;transition:filter .15s}
