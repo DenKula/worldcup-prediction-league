@@ -599,6 +599,10 @@ def league_admin_edit_match(code, match_id):
                 elif get_outcome(pred) == old_outcome:
                     s["outcome_correct"] = max(0, s["outcome_correct"] - 1)
 
+        new_name = request.form.get("match_name", "").strip()
+        if new_name:
+            match["name"] = new_name
+
         new_preds = {}
         for player in data["players"]:
             pred = request.form.get(f"pred_{player}", "").strip()
@@ -800,6 +804,48 @@ def master_result():
     _save_master(data)
     synced = propagate_result(match["name"], match["datetime"], actual)
     flash(f"{match['name']} → {actual} · synced to {synced} league(s).", "success")
+    return redirect(url_for("master_dashboard"))
+
+
+@app.route("/worldcup/admin/rename", methods=["POST"])
+def master_rename_match():
+    if not session.get("master_admin"):
+        return redirect(url_for("master_login"))
+    data     = load_master()
+    match_id = request.form.get("match_id")
+    new_name = request.form.get("new_name", "").strip()
+    match    = next((m for m in data["matches"] if m["id"] == match_id), None)
+    if not match:
+        flash("Match not found.", "error")
+        return redirect(url_for("master_dashboard"))
+    if not new_name:
+        flash("Name cannot be empty.", "error")
+        return redirect(url_for("master_dashboard"))
+
+    old_name     = match["name"]
+    old_datetime = match["datetime"]
+    match["name"] = new_name
+    _save_master(data)
+
+    index  = load_index()
+    synced = 0
+    for code in index:
+        league_data = load_league(code)
+        if league_data is None:
+            continue
+        if league_data["meta"].get("template") != "worldcup":
+            continue
+        m = next(
+            (m for m in league_data["matches"]
+             if m["name"] == old_name and m["datetime"] == old_datetime),
+            None,
+        )
+        if m:
+            m["name"] = new_name
+            save_league(code, league_data)
+            synced += 1
+
+    flash(f"Renamed to '{new_name}' · updated {synced} league(s).", "success")
     return redirect(url_for("master_dashboard"))
 
 
