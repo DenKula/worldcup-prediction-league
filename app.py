@@ -125,21 +125,36 @@ def ranked_players(data):
     dp = data["settings"].get("diff_points", 1)
     sp = data["settings"]["score_points"]
 
-    # Sum per-match player_points (set by apply_result since multipliers were added).
-    # Fall back to aggregate * settings for legacy data that predates this field.
+    # Build per-player totals by iterating every completed match.
+    # Matches that already have player_points (set by apply_result) use the stored value
+    # which includes any multiplier. Older matches without that field are computed on the
+    # fly using current settings and their stored predictions + result.
     totals: dict[str, float] = {}
-    has_per_match = any(m.get("player_points") for m in data["matches"] if m.get("result"))
-    if has_per_match:
-        for m in data["matches"]:
-            for player, pts in m.get("player_points", {}).items():
+    for m in data["matches"]:
+        if not m.get("result"):
+            continue
+        if "player_points" in m:
+            for player, pts in m["player_points"].items():
                 totals[player] = totals.get(player, 0) + pts
-    else:
-        for name, stats in data["players"].items():
-            totals[name] = (
-                stats["outcome_correct"] * op +
-                stats.get("diff_correct", 0) * dp +
-                stats["score_correct"] * sp
-            )
+        else:
+            mult    = m.get("multiplier", 1)
+            res     = m["result"]
+            res_diff = goal_diff(res)
+            res_out  = get_outcome(res)
+            for player, pred in m.get("predictions", {}).items():
+                if player not in data["players"]: continue
+                try: parse_score(pred)
+                except: continue
+                if pred == res:
+                    pts = (op + dp + sp) * mult
+                elif goal_diff(pred) == res_diff:
+                    pts = (op + dp) * mult
+                elif get_outcome(pred) == res_out:
+                    pts = op * mult
+                else:
+                    pts = 0
+                if pts:
+                    totals[player] = totals.get(player, 0) + pts
 
     return sorted(
         data["players"].items(),

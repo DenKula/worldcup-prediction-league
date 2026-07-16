@@ -19,7 +19,7 @@
     <tbody>
       {% set medals = ['🥇','🥈','🥉'] %}
       {% for name, stats in ranked %}
-      {% set total = player_totals.get(name, stats.outcome_correct * op + stats.get('diff_correct', 0) * dp + stats.score_correct * sp) %}
+      {% set total = player_totals.get(name, 0) %}
       <tr class="{% if loop.index0 < 3 %}rank-{{ loop.index }}{% endif %}">
         <td class="c">{{ medals[loop.index0] if loop.index0 < 3 else loop.index }}</td>
         <td><b>{{ name }}</b></td>
