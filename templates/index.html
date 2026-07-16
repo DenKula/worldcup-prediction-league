@@ -56,7 +56,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for match in completed %}
+      {% for match in completed|reverse %}
       <tr>
         <td style="font-weight:600;min-width:160px">
           {{ match.name }}
