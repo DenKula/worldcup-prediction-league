@@ -19,7 +19,7 @@
     <tbody>
       {% set medals = ['🥇','🥈','🥉'] %}
       {% for name, stats in ranked %}
-      {% set total = stats.outcome_correct * op + stats.get('diff_correct', 0) * dp + stats.score_correct * sp %}
+      {% set total = player_totals.get(name, stats.outcome_correct * op + stats.get('diff_correct', 0) * dp + stats.score_correct * sp) %}
       <tr class="{% if loop.index0 < 3 %}rank-{{ loop.index }}{% endif %}">
         <td class="c">{{ medals[loop.index0] if loop.index0 < 3 else loop.index }}</td>
         <td><b>{{ name }}</b></td>
@@ -58,7 +58,12 @@
     <tbody>
       {% for match in completed %}
       <tr>
-        <td style="font-weight:600;min-width:160px">{{ match.name }}</td>
+        <td style="font-weight:600;min-width:160px">
+          {{ match.name }}
+          {% if match.get('multiplier', 1) != 1 %}
+          <span style="background:#f59e0b;color:#fff;border-radius:4px;padding:1px 5px;font-size:.72rem;font-weight:800;margin-left:4px">×{{ match.multiplier | int if match.multiplier == (match.multiplier | int) else match.multiplier }}</span>
+          {% endif %}
+        </td>
         <td class="c" style="font-weight:800;color:#1a6b3c">{{ match.result }}</td>
         <td class="c muted" style="font-size:.8rem">{{ fmt_dt(match.datetime) }}</td>
         {% for name, _ in ranked %}

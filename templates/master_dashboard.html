@@ -16,6 +16,9 @@
             font-size:.78rem;font-weight:700}
 .rename-form{display:none;gap:6px;align-items:center;margin-top:6px}
 .rename-form input{flex:1;min-width:0;font-size:.82rem}
+.mult-form{display:none;gap:6px;align-items:center;margin-top:4px}
+.mult-form input[type=number]{width:70px;font-size:.82rem}
+.mult-badge{background:#f59e0b;color:#fff;border-radius:4px;padding:1px 6px;font-size:.72rem;font-weight:800;margin-left:4px}
 .tabs{display:flex;gap:0;border-bottom:2px solid #e5e5e5;margin-bottom:22px}
 .tab-btn{background:none;border:none;padding:10px 24px;font-size:.92rem;font-weight:700;
          color:#888;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;
@@ -60,7 +63,10 @@
           <div class="section-title">{{ fmt_dt(match.datetime).split(',')[0] }}</div>
         {% endif %}
         <div class="match-result-row" style="flex-wrap:wrap">
-          <div class="mr-name">{{ match.name }}</div>
+          <div class="mr-name">
+            {{ match.name }}
+            {% if match.get('multiplier', 1) != 1 %}<span class="mult-badge">×{{ match.multiplier | int if match.multiplier == (match.multiplier | int) else match.multiplier }}</span>{% endif %}
+          </div>
           <div class="mr-time">{{ fmt_dt(match.datetime) }}</div>
           <form method="post" action="{{ url_for('master_result') }}" class="mr-form">
             <input type="hidden" name="match_id" value="{{ match.id }}">
@@ -69,13 +75,24 @@
           </form>
           <button type="button" class="btn btn-gray btn-sm"
                   onclick="toggleRename(this)">✎ Rename</button>
+          <button type="button" class="btn btn-gray btn-sm"
+                  onclick="toggleMult(this)">× Multiplier</button>
           <form method="post" action="{{ url_for('master_rename_match') }}"
                 class="rename-form" style="width:100%">
             <input type="hidden" name="match_id" value="{{ match.id }}">
             <input type="text" name="new_name" value="{{ match.name }}" required style="flex:1">
             <button type="submit" class="btn btn-green btn-sm">Save</button>
             <button type="button" class="btn btn-gray btn-sm"
-                    onclick="toggleRename(this.closest('.match-result-row').querySelector('button'))">Cancel</button>
+                    onclick="toggleRename(this.closest('.match-result-row').querySelector('[onclick*=toggleRename]'))">Cancel</button>
+          </form>
+          <form method="post" action="{{ url_for('master_set_multiplier') }}"
+                class="mult-form" style="width:100%">
+            <input type="hidden" name="match_id" value="{{ match.id }}">
+            <span style="font-size:.82rem;font-weight:600">Multiplier:</span>
+            <input type="number" name="multiplier" value="{{ match.get('multiplier', 1) }}" min="0.1" step="0.5" required>
+            <button type="submit" class="btn btn-green btn-sm">Save &amp; Sync</button>
+            <button type="button" class="btn btn-gray btn-sm"
+                    onclick="toggleMult(this.closest('.match-result-row').querySelector('[onclick*=toggleMult]'))">Cancel</button>
           </form>
         </div>
       {% endfor %}
@@ -89,7 +106,10 @@
     <div class="card-body" style="padding:10px 18px">
       {% for match in completed|reverse %}
       <div class="match-result-row" style="flex-wrap:wrap">
-        <div class="mr-name">{{ match.name }}</div>
+        <div class="mr-name">
+          {{ match.name }}
+          {% if match.get('multiplier', 1) != 1 %}<span class="mult-badge">×{{ match.multiplier | int if match.multiplier == (match.multiplier | int) else match.multiplier }}</span>{% endif %}
+        </div>
         <div class="mr-time">{{ fmt_dt(match.datetime) }}</div>
         <div class="mr-result">{{ match.result }}</div>
         <form method="post" action="{{ url_for('master_result') }}" class="mr-form">
@@ -99,13 +119,24 @@
         </form>
         <button type="button" class="btn btn-gray btn-sm"
                 onclick="toggleRename(this)">✎ Rename</button>
+        <button type="button" class="btn btn-gray btn-sm"
+                onclick="toggleMult(this)">× Multiplier</button>
         <form method="post" action="{{ url_for('master_rename_match') }}"
               class="rename-form" style="width:100%">
           <input type="hidden" name="match_id" value="{{ match.id }}">
           <input type="text" name="new_name" value="{{ match.name }}" required style="flex:1">
           <button type="submit" class="btn btn-green btn-sm">Save</button>
           <button type="button" class="btn btn-gray btn-sm"
-                  onclick="toggleRename(this.closest('.match-result-row').querySelector('button'))">Cancel</button>
+                  onclick="toggleRename(this.closest('.match-result-row').querySelector('[onclick*=toggleRename]'))">Cancel</button>
+        </form>
+        <form method="post" action="{{ url_for('master_set_multiplier') }}"
+              class="mult-form" style="width:100%">
+          <input type="hidden" name="match_id" value="{{ match.id }}">
+          <span style="font-size:.82rem;font-weight:600">Multiplier:</span>
+          <input type="number" name="multiplier" value="{{ match.get('multiplier', 1) }}" min="0.1" step="0.5" required>
+          <button type="submit" class="btn btn-green btn-sm">Save &amp; Sync</button>
+          <button type="button" class="btn btn-gray btn-sm"
+                  onclick="toggleMult(this.closest('.match-result-row').querySelector('[onclick*=toggleMult]'))">Cancel</button>
         </form>
       </div>
       {% endfor %}
@@ -168,6 +199,13 @@ function toggleRename(btn) {
   const open = form.style.display === 'flex';
   form.style.display = open ? 'none' : 'flex';
   if (!open) row.querySelector('.rename-form input[name="new_name"]').focus();
+}
+function toggleMult(btn) {
+  const row  = btn.closest('.match-result-row');
+  const form = row.querySelector('.mult-form');
+  const open = form.style.display === 'flex';
+  form.style.display = open ? 'none' : 'flex';
+  if (!open) row.querySelector('.mult-form input[type="number"]').focus();
 }
 </script>
 

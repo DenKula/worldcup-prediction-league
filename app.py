@@ -124,19 +124,35 @@ def ranked_players(data):
     op = data["settings"]["outcome_points"]
     dp = data["settings"].get("diff_points", 1)
     sp = data["settings"]["score_points"]
+
+    # Sum per-match player_points (set by apply_result since multipliers were added).
+    # Fall back to aggregate * settings for legacy data that predates this field.
+    totals: dict[str, float] = {}
+    has_per_match = any(m.get("player_points") for m in data["matches"] if m.get("result"))
+    if has_per_match:
+        for m in data["matches"]:
+            for player, pts in m.get("player_points", {}).items():
+                totals[player] = totals.get(player, 0) + pts
+    else:
+        for name, stats in data["players"].items():
+            totals[name] = (
+                stats["outcome_correct"] * op +
+                stats.get("diff_correct", 0) * dp +
+                stats["score_correct"] * sp
+            )
+
     return sorted(
         data["players"].items(),
-        key=lambda x: (
-            x[1]["outcome_correct"] * op +
-            x[1].get("diff_correct", 0) * dp +
-            x[1]["score_correct"] * sp
-        ),
+        key=lambda x: totals.get(x[0], 0),
         reverse=True,
-    ), op, dp, sp
+    ), op, dp, sp, totals
 
 
 def apply_result(data, match, actual):
-    dp = data["settings"].get("diff_points", 1)
+    op   = data["settings"]["outcome_points"]
+    dp   = data["settings"].get("diff_points", 1)
+    sp   = data["settings"]["score_points"]
+    mult = match.get("multiplier", 1)
 
     # Undo previous result
     if match.get("result") and match.get("predictions"):
@@ -157,9 +173,10 @@ def apply_result(data, match, actual):
             elif get_outcome(pred) == old_out:
                 s["outcome_correct"]          = max(0, s["outcome_correct"] - 1)
 
-    # Apply new result
+    # Apply new result and compute per-player points for this match
     new_diff = goal_diff(actual)
     new_out  = get_outcome(actual)
+    player_points: dict[str, float] = {}
     for player, pred in match.get("predictions", {}).items():
         if player not in data["players"]: continue
         try: parse_score(pred)
@@ -170,12 +187,16 @@ def apply_result(data, match, actual):
             s["outcome_correct"] += 1
             s["diff_correct"]    += 1
             s["score_correct"]   += 1
+            player_points[player] = (op + dp + sp) * mult
         elif goal_diff(pred) == new_diff:
             s["outcome_correct"] += 1
             s["diff_correct"]    += 1
+            player_points[player] = (op + dp) * mult
         elif get_outcome(pred) == new_out:
             s["outcome_correct"] += 1
+            player_points[player] = op * mult
 
+    match["player_points"] = player_points
     match["result"] = actual
 
 
@@ -394,12 +415,13 @@ def league_welcome(code):
 @league_member_required
 def league_index(code):
     data = load_league(code)
-    ranked, op, dp, sp = ranked_players(data)
+    ranked, op, dp, sp, player_totals = ranked_players(data)
     completed = [m for m in data["matches"] if m.get("result")]
     upcoming  = [m for m in data["matches"] if not m.get("result")]
     return render_template("index.html",
                            code=code, league_name=data["meta"]["name"],
                            ranked=ranked, op=op, dp=dp, sp=sp,
+                           player_totals=player_totals,
                            completed=completed, upcoming=upcoming)
 
 
@@ -498,6 +520,14 @@ def league_admin_result(code):
         parse_score(actual)
     except ValueError:
         flash("Invalid score — use 2-1 format.", "error")
+        return redirect(url_for("league_admin_dashboard", code=code))
+    try:
+        mult = float(request.form.get("multiplier", "1") or "1")
+        if mult <= 0:
+            raise ValueError
+        match["multiplier"] = mult
+    except ValueError:
+        flash("Invalid multiplier — must be a positive number.", "error")
         return redirect(url_for("league_admin_dashboard", code=code))
     apply_result(data, match, actual)
     save_league(code, data)
@@ -603,6 +633,15 @@ def league_admin_edit_match(code, match_id):
         if new_name:
             match["name"] = new_name
 
+        try:
+            mult = float(request.form.get("multiplier", "1") or "1")
+            if mult <= 0:
+                raise ValueError
+            match["multiplier"] = mult
+        except ValueError:
+            flash("Invalid multiplier — must be a positive number.", "error")
+            return redirect(url_for("league_admin_edit_match", code=code, match_id=match_id))
+
         new_preds = {}
         for player in data["players"]:
             pred = request.form.get(f"pred_{player}", "").strip()
@@ -633,6 +672,26 @@ def league_admin_edit_match(code, match_id):
                     s["diff_correct"]    += 1
                 elif get_outcome(pred) == result_outcome:
                     s["outcome_correct"] += 1
+
+        # Recompute per-match player_points so totals stay correct
+        if match.get("result"):
+            op2  = data["settings"]["outcome_points"]
+            dp2  = data["settings"].get("diff_points", 1)
+            sp2  = data["settings"]["score_points"]
+            mult = match.get("multiplier", 1)
+            res  = match["result"]
+            pp   = {}
+            for player, pred in match["predictions"].items():
+                if player not in data["players"]: continue
+                try: parse_score(pred)
+                except: continue
+                if pred == res:
+                    pp[player] = (op2 + dp2 + sp2) * mult
+                elif goal_diff(pred) == goal_diff(res):
+                    pp[player] = (op2 + dp2) * mult
+                elif get_outcome(pred) == get_outcome(res):
+                    pp[player] = op2 * mult
+            match["player_points"] = pp
 
         save_league(code, data)
         flash("Predictions updated.", "success")
@@ -669,7 +728,8 @@ def league_admin_recalculate(code):
         data["players"][player]["score_correct"]   = 0
     completed = [(m, m["result"]) for m in data["matches"] if m.get("result")]
     for match, result in completed:
-        match["result"] = None  # so apply_result skips the undo block
+        match["result"]        = None  # so apply_result skips the undo block
+        match["player_points"] = {}
         apply_result(data, match, result)
     save_league(code, data)
     flash(f"Scores recalculated from {len(completed)} completed match(es).", "success")
@@ -804,6 +864,53 @@ def master_result():
     _save_master(data)
     synced = propagate_result(match["name"], match["datetime"], actual)
     flash(f"{match['name']} → {actual} · synced to {synced} league(s).", "success")
+    return redirect(url_for("master_dashboard"))
+
+
+@app.route("/worldcup/admin/multiplier", methods=["POST"])
+def master_set_multiplier():
+    if not session.get("master_admin"):
+        return redirect(url_for("master_login"))
+    data     = load_master()
+    match_id = request.form.get("match_id")
+    match    = next((m for m in data["matches"] if m["id"] == match_id), None)
+    if not match:
+        flash("Match not found.", "error")
+        return redirect(url_for("master_dashboard"))
+    try:
+        mult = float(request.form.get("multiplier", "1") or "1")
+        if mult <= 0:
+            raise ValueError
+    except ValueError:
+        flash("Invalid multiplier — must be a positive number.", "error")
+        return redirect(url_for("master_dashboard"))
+
+    match["multiplier"] = mult
+    _save_master(data)
+
+    # Propagate multiplier to all worldcup-template leagues, then re-apply result
+    index  = load_index()
+    synced = 0
+    for code in index:
+        league_data = load_league(code)
+        if league_data is None:
+            continue
+        if league_data["meta"].get("template") != "worldcup":
+            continue
+        m = next(
+            (m for m in league_data["matches"]
+             if m["name"] == match["name"] and m["datetime"] == match["datetime"]),
+            None,
+        )
+        if m:
+            m["multiplier"] = mult
+            if m.get("result"):
+                m["result"] = None
+                apply_result(league_data, m, match["result"])
+            save_league(code, league_data)
+            synced += 1
+
+    flash(f"Multiplier ×{mult:g} set for '{match['name']}' · updated {synced} league(s).", "success")
     return redirect(url_for("master_dashboard"))
 
 
