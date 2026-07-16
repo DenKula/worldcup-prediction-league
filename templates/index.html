@@ -92,7 +92,12 @@
     <tbody>
       {% for match in upcoming[:10] %}
       <tr>
-        <td style="font-weight:600">{{ match.name }}</td>
+        <td style="font-weight:600">
+          {{ match.name }}
+          {% if match.get('multiplier', 1) != 1 %}
+          <span style="background:#f59e0b;color:#fff;border-radius:4px;padding:1px 5px;font-size:.72rem;font-weight:800;margin-left:4px">×{{ match.multiplier | int if match.multiplier == (match.multiplier | int) else match.multiplier }}</span>
+          {% endif %}
+        </td>
         <td class="muted" style="font-size:.8rem">{{ fmt_dt(match.datetime) }}</td>
         <td class="c">{{ match.predictions|length }} / {{ ranked|length }}</td>
       </tr>

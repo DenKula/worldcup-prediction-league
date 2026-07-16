@@ -57,7 +57,12 @@
 
           <div class="match-row">
             <div>
-              <div class="match-name">{{ match.name }}</div>
+              <div class="match-name">
+                {{ match.name }}
+                {% if match.get('multiplier', 1) != 1 %}
+                <span style="background:#f59e0b;color:#fff;border-radius:4px;padding:1px 5px;font-size:.72rem;font-weight:800;margin-left:4px">×{{ match.multiplier | int if match.multiplier == (match.multiplier | int) else match.multiplier }}</span>
+                {% endif %}
+              </div>
               {% set existing = match.predictions.get(player, '') %}
               {% if existing %}
               <div class="pred-saved">✓ saved: {{ existing }}</div>
