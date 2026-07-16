@@ -89,7 +89,7 @@
                 class="mult-form" style="width:100%">
             <input type="hidden" name="match_id" value="{{ match.id }}">
             <span style="font-size:.82rem;font-weight:600">Multiplier:</span>
-            <input type="number" name="multiplier" value="{{ match.get('multiplier', 1) }}" min="0.1" step="0.5" required>
+            <input type="number" name="multiplier" value="{{ match.get('multiplier', 1) }}" min="0.1" step="any" required>
             <button type="submit" class="btn btn-green btn-sm">Save &amp; Sync</button>
             <button type="button" class="btn btn-gray btn-sm"
                     onclick="toggleMult(this.closest('.match-result-row').querySelector('[onclick*=toggleMult]'))">Cancel</button>
@@ -133,7 +133,7 @@
               class="mult-form" style="width:100%">
           <input type="hidden" name="match_id" value="{{ match.id }}">
           <span style="font-size:.82rem;font-weight:600">Multiplier:</span>
-          <input type="number" name="multiplier" value="{{ match.get('multiplier', 1) }}" min="0.1" step="0.5" required>
+          <input type="number" name="multiplier" value="{{ match.get('multiplier', 1) }}" min="0.1" step="any" required>
           <button type="submit" class="btn btn-green btn-sm">Save &amp; Sync</button>
           <button type="button" class="btn btn-gray btn-sm"
                   onclick="toggleMult(this.closest('.match-result-row').querySelector('[onclick*=toggleMult]'))">Cancel</button>

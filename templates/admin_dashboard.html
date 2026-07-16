@@ -210,7 +210,7 @@
           <input type="hidden" name="match_id" value="{{ match.id }}">
           <input type="text" name="actual" placeholder="2-1" title="Actual score">
           <input type="number" name="multiplier" value="{{ match.get('multiplier', 1) }}"
-                 min="0.1" step="0.5" title="Point multiplier" class="mult-input">
+                 min="0.1" step="any" title="Point multiplier" class="mult-input">
           <button type="submit" class="btn btn-green btn-sm">Save</button>
         </form>
         <a href="{{ url_for('league_admin_edit_match', code=code, match_id=match.id) }}"
@@ -239,7 +239,7 @@
         <input type="hidden" name="match_id" value="{{ match.id }}">
         <input type="text" name="actual" value="{{ match.result }}" title="Edit result">
         <input type="number" name="multiplier" value="{{ match.get('multiplier', 1) }}"
-               min="0.1" step="0.5" title="Point multiplier" class="mult-input">
+               min="0.1" step="any" title="Point multiplier" class="mult-input">
         <button type="submit" class="btn btn-gray btn-sm">Update</button>
       </form>
       <a href="{{ url_for('league_admin_edit_match', code=code, match_id=match.id) }}"
